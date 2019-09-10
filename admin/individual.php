@@ -257,7 +257,7 @@ overflow-y:scroll;
 			<select name="searchIN">
   <option  value="nonmember.NonMemberID">Member ID</option>
   <option  value="nonmember.Title">Title</option>
-  <option   value="nonmember.FirstName">First Name </option>
+  <option   value="nonmember.FirstName">First & Name </option>
   <option  value="nonmember.LastName">Last Name</option>
   <option  value="nonmember.PhoneNum">Phone Number</option>
   <option  value="nonmember.DOB"> Date of Birth </option>
