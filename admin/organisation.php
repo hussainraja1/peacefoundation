@@ -17,6 +17,7 @@ else
 }
 
 // for editing the database while viewing it
+if($_SESSION['membertype'] == "admin"){
 if(isset($_POST['sub'])){
 $orgid = $_POST['orgid'];	
 $orgname = trim($_POST['orgname']);
@@ -54,7 +55,10 @@ echo '<script>alert("Please enter the something in the fields");</script>';
 
 
 }
-		
+}
+else{
+}
+	
 if(isset($_POST['search']) && isset($_POST['searchIN']))
 {
 	$searchColumn = $_POST['searchIN'];
@@ -249,19 +253,21 @@ overflow-y:scroll;
         <form action="organisation.php" method="post">
 			
 			<p>Please select the the column you want to search in, type in the keyword and click filter button to search:</p>
-			  <input type="radio" name="searchIN" value="organisation.OrgID">Organisation ID
-			  <input type="radio" name="searchIN" value="organisation.OrgName">Organisation Name
-			  <input type="radio" name="searchIN" value="organisation.Title"> Title
-			  <input type="radio" name="searchIN" value="organisation.FirstName"> First Name 
-			  <input type="radio" name="searchIN" value="organisation.LastName"> Last Name
-			  <input type="radio" name="searchIN" value="organisation.PhoneNum"> Phone Number <br>
-			  <input type="radio" name="searchIN" value="organisation.Response">Response
-			  <input type="radio" name="searchIN" value="organisation.Annotations">Annotations
-			  <input type="radio" name="searchIN" value="organisation.OrgMembership">Membership
-			  <input type="radio" name="searchIN" value="address.Address"> Address
-			  <input type="radio" name="searchIN" value="address.City"> City
-			  <input type="radio" name="searchIN" value="address.Suburb"> Suburb
-			  <input type="radio" name="searchIN" value="address.Country"> Country<br>
+			  <br>
+						<select name="searchIN">
+  <option  value="organisation.OrgID">Organisation ID</option>
+  <option  value="organisation.OrgName">Organisation Name</option>
+  <option   value="organisation.PhoneNum">Phone Number</option>
+  <option  value="organisation.Response">Response</option>
+  <option  value="organisation.Annotations">Annotations</option>
+  <option  value="organisation.OrgMembership"> Membership</option>
+  <option  value="address.Address"> Address</option>
+  <option  value="address.City"> City</option>
+  <option  value="address.Suburb"> Suburb</option>
+  <option  value="address.Country"> Country</option>
+
+</select>  
+<br>
             <input type="text" name="valueToSearch" placeholder="Keyword To Search"><br><br>
 
             <input type="submit" name="search" value="Filter"><br><br>
@@ -283,7 +289,7 @@ overflow-y:scroll;
 <th>Country</th>
 
 </tr>";
-
+if($_SESSION['membertype'] == "admin"){
 while($row = mysqli_fetch_array($search_result)) {
 	
 	echo "<tr><form action=organisation.php method=post>";
@@ -304,20 +310,35 @@ while($row = mysqli_fetch_array($search_result)) {
     echo "</tr>";
 	}
 echo "</table>";
+}
+else if($_SESSION['membertype'] == "volunteer"){
+while($row = mysqli_fetch_array($search_result)) {
+	
+	echo "<tr>";
+    echo "<td>".$row['OrgID'] . "</td>";
+    echo "<td>".$row['OrgName'] . "</td>";
+    echo "<td>".$row['PhoneNum'] . "</td>";
+    echo "<td>".$row['Response'] . "</td>";
+	echo "<td>".$row['Annotations'] . "</td>";
+	echo "<td>".$row['OrgMembership'] . "</td>";
+	echo "<td>".$row['Address'] . "</td>";
+	echo "<td>".$row['Suburb'] . "</td>";
+    echo "<td>".$row['City'] . "</td>";
+    echo "<td>".$row['Country'] . "</td>";
+	
+	echo "</tr>";
+
+
+    echo "</tr>";
+	}
+echo "</table>";
+}
 ?>
         </form>
         </div>
       </div>
       <!-- /.container-fluid -->
 
-      <!-- Sticky Footer -->
-      <footer class="sticky-footer">
-        <div class="container my-auto">
-          <div class="copyright text-center my-auto">
-            <span>Copyright © Your Website 2019</span>
-          </div>
-        </div>
-      </footer>
 
     </div>
     <!-- /.content-wrapper -->

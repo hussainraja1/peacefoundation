@@ -7,7 +7,6 @@ if (!isset($_SESSION['loggedin'])) {
 	exit();
 }
 else if ($_SESSION['membertype'] == "admin" || $_SESSION['membertype'] == "volunteer"){
-	
 }
 else
 {

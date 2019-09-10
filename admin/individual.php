@@ -52,10 +52,8 @@ $query =  "
 
 }
 else{
-echo '<script>alert("Please enter the something in the damn fields");</script>';	
+echo '<script>alert("Please enter the something in the fields");</script>';	
 }
-
-
 }		
 }
 else{
@@ -255,18 +253,23 @@ overflow-y:scroll;
         <form action="individual.php" method="post">
 			
 			<p>Please select the the column you want to search in, type in the keyword and click filter button to search:</p>
-			  <input type="radio" name="searchIN" value="nonmember.NonMemberID">Member ID
-			  <input type="radio" name="searchIN" value="nonmember.Title"> Title
-			  <input type="radio" name="searchIN" value="nonmember.FirstName"> First Name 
-			  <input type="radio" name="searchIN" value="nonmember.LastName"> Last Name
-			  <input type="radio" name="searchIN" value="nonmember.PhoneNum"> Phone Number
-			  <input type="radio" name="searchIN" value="nonmember.DOB"> Date of Birth
-			  <input type="radio" name="searchIN" value="nonmember.Comments"> Comments
-			  <input type="radio" name="searchIN" value="address.Address"> Address
-			  <input type="radio" name="searchIN" value="address.City"> City
-			  <input type="radio" name="searchIN" value="address.Suburb"> Suburb
-			  <input type="radio" name="searchIN" value="address.Country"> Country<br>
-            <input type="text" name="valueToSearch" placeholder="Keyword To Search"><br><br>
+<br>  
+			<select name="searchIN">
+  <option  value="nonmember.NonMemberID">Member ID</option>
+  <option  value="nonmember.Title">Title</option>
+  <option   value="nonmember.FirstName">First Name </option>
+  <option  value="nonmember.LastName">Last Name</option>
+  <option  value="nonmember.PhoneNum">Phone Number</option>
+  <option  value="nonmember.DOB"> Date of Birth </option>
+  <option  value="nonmember.Comments"> Comments</option>
+  <option  value="address.Address"> Address</option>
+  <option  value="address.City"> City</option>
+  <option  value="address.Suburb"> Suburb</option>
+  <option  value="address.Country"> Country</option>
+
+</select>
+<br>           
+		   <input type="text" name="valueToSearch" placeholder="Keyword To Search"><br><br>
 
             <input type="submit" name="search" value="Filter"><br><br>
             <input type="submit" name="all" value="Show All Rows"><br><br>
@@ -313,6 +316,7 @@ echo "</table>";
 else if($_SESSION['membertype'] == "volunteer"){
 while($row = mysqli_fetch_array($search_result)) {
 	
+	echo "<tr>";
 	echo "<td>".$row['NonMemberID']. "</td>";
     echo "<td>".$row['Title'] . "</td>";
     echo "<td>".$row['FirstName'] . "</td>";
@@ -337,14 +341,7 @@ echo "</table>";
       </div>
       <!-- /.container-fluid -->
 
-      <!-- Sticky Footer -->
-      <footer class="sticky-footer">
-        <div class="container my-auto">
-          <div class="copyright text-center my-auto">
-            <span>Copyright © Your Website 2019</span>
-          </div>
-        </div>
-      </footer>
+
 
     </div>
     <!-- /.content-wrapper -->

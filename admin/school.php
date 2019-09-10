@@ -17,6 +17,7 @@ else
 }
 
 // for editing the database
+if($_SESSION['membertype'] == "admin"){
 if(isset($_POST['sub'])){
 $schoolid = $_POST['schoolid'];
 $schoolname = $_POST['schoolname'];
@@ -64,8 +65,10 @@ $query =  "
 else{
 echo '<script>alert("Please enter the something in the fields");</script>';	
 }
-
 }	
+}
+else{
+}
 
 if(isset($_POST['search']) && isset($_POST['searchIN']))
 {
@@ -74,8 +77,8 @@ if(isset($_POST['search']) && isset($_POST['searchIN']))
     // search in all table columns
     // using concat mysql function
     $query = "SELECT school.SchoolID,school.SchoolName,school.TrainedBy,school.Annotations,school.SchoolType,school.PartnershipID,school.DecileRating,
-	school.MaoriPercentage,school.FullTraining,school.RevisitTraining,school.PrimaryContact,school.Principal,school.PrincipalEmail,
-	school.Interest,school.EmailSent,school.ReplyDate,school.TrainingBooked,address.Address,address.City,address.Suburb,address.Country
+	school.MaoriPercentage,school.FullTraining,school.RevisitTraining,school.PrimaryContact,school.Principal,school.PrincipalEmail
+	,school.PhoneNumber,school.Interest,school.EmailSent,school.ReplyDate,school.TrainingBooked,address.Address,address.City,address.Suburb,address.Country
 FROM address ,school
 WHERE  address.id =school.id AND $searchColumn LIKE '%".$valueToSearch."%'";
 
@@ -85,7 +88,7 @@ WHERE  address.id =school.id AND $searchColumn LIKE '%".$valueToSearch."%'";
 
     $query = "SELECT school.SchoolID,school.SchoolName,school.TrainedBy,school.Annotations,school.SchoolType,school.PartnershipID,school.DecileRating,
 	school.MaoriPercentage,school.FullTraining,school.RevisitTraining,school.PrimaryContact,school.Principal,school.PrincipalEmail,
-	school.Interest,school.EmailSent,school.ReplyDate,school.TrainingBooked,address.Address,address.City,address.Suburb,address.Country
+	school.PhoneNumber,school.Interest,school.EmailSent,school.ReplyDate,school.TrainingBooked,address.Address,address.City,address.Suburb,address.Country
 FROM address ,school
 WHERE  address.id =school.id";
 
@@ -265,32 +268,35 @@ overflow-y:scroll;
         <form action="school.php" method="post">
 			
 			<p>Please select the the column you want to search in, type in the keyword and click filter button to search:</p>
-			  <input type="radio" name="searchIN" value="school.SchoolID">School ID
-			  <input type="radio" name="searchIN" value="school.SchoolName">School Name
-			  <input type="radio" name="searchIN" value="school.Title"> Title
-			  <input type="radio" name="searchIN" value="school.FirstName"> First Name 
-			  <input type="radio" name="searchIN" value="school.LastName"> Last Name
-			  <input type="radio" name="searchIN" value="school.PhoneNumber"> Phone Number
-			  <input type="radio" name="searchIN" value="school.TrainedBy"> Trained By
-			  <input type="radio" name="searchIN" value="school.Annotations"> Annotations
-			  <input type="radio" name="searchIN" value="school.SchoolType"> School Type 
-			  <input type="radio" name="searchIN" value="school.PartnershipID"> PartnershipID 
-			  <input type="radio" name="searchIN" value="school.DecileRating"> DecileRating
-			  <input type="radio" name="searchIN" value="school.MaoriPercentage"> MaoriPercentage
-			  <input type="radio" name="searchIN" value="school.FullTraining"> FullTraining <br>
-			  <input type="radio" name="searchIN" value="school.RevisitTraining"> RevisitTraining
-			  <input type="radio" name="searchIN" value="school.PrimaryContact"> PrimaryContact
-			  <input type="radio" name="searchIN" value="school.Principal"> Principal
-			  <input type="radio" name="searchIN" value="school.PrincipalEmail"> PrincipalEmail
-			  <input type="radio" name="searchIN" value="school.Interest"> Interest
-			  <input type="radio" name="searchIN" value="school.EmailSent"> EmailSent
-			  <input type="radio" name="searchIN" value="school.ReplyDate"> ReplyDate
-			  <input type="radio" name="searchIN" value="school.TrainingBooked"> TrainingBooked
-			  <input type="radio" name="searchIN" value="address.Address"> Address
-			  <input type="radio" name="searchIN" value="address.City"> City
-			  <input type="radio" name="searchIN" value="address.Suburb"> Suburb
-			  <input type="radio" name="searchIN" value="address.Country"> Country<br>
-            <input type="text" name="valueToSearch" placeholder="Keyword To Search"><br><br>
+         <br>  
+			<select name="searchIN">
+  <option  value="school.SchoolID">School ID</option>
+  <option  value="school.SchoolName">School Name</option>
+  <option   value="school.PhoneNumber">Phone Number</option>
+  <option  value="school.TrainedBy"> Trained By</option>
+  <option  value="school.Annotations">Annotations</option>
+  <option  value="school.SchoolType"> School Type </option>
+  <option  value="school.PartnershipID"> PartnershipID</option>
+  <option  value="school.DecileRating"> DecileRating</option>
+  <option  value="school.MaoriPercentage"> MaoriPercentage</option>
+  <option  value="school.FullTraining"> FullTraining</option>
+  <option  value="school.RevisitTraining"> RevisitTraining</option>
+  <option  value="school.PrimaryContact"> PrimaryContact</option>
+  <option  value="school.Principal"> Principal</option>
+  <option  value="school.PrincipalEmail"> PrincipalEmail</option>
+  <option  value="school.Interest"> Interest</option>
+  <option  value="school.EmailSent"> EmailSent</option>
+  <option  value="school.ReplyDate"> ReplyDate</option>
+  <option  value="school.TrainingBooked"> TrainingBooked</option>
+  <option  value="address.Address"> Address</option>
+  <option  value="address.City"> City</option>
+  <option  value="address.Suburb"> Suburb</option>
+  <option  value="address.Country"> Country</option>
+
+</select>
+<br>
+			<input type="text" name="valueToSearch" placeholder="Keyword To Search"><br><br>
+
 
             <input type="submit" name="search" value="Filter"><br><br>
             <input type="submit" name="all" value="Show All Rows"><br><br>
@@ -302,9 +308,6 @@ overflow-y:scroll;
 <tr>
 <th>SchoolID</th>
 <th>School Name</th>
-<th>Title</th>
-<th>First name</th>
-<th>Last name</th>
 <th>TrainedBy</th>
 <th>Annotations</th>
 <th>SchoolType</th>
@@ -321,16 +324,16 @@ overflow-y:scroll;
 <th>EmailSent</th>
 <th>ReplyDate</th>
 <th>TrainingBooked</th>
-
+<th>Address</th>
+<th>Suburb</th>
+<th>City</th>
+<th>Country</th>
 </tr>";
 
 while($row = mysqli_fetch_array($search_result)) {
     echo "<tr>";
     echo "<td>" . $row['SchoolID'] . "</td>";
     echo "<td>" . $row['SchoolName'] . "</td>";
-    echo "<td>" . $row['Title'] . "</td>";
-    echo "<td>" . $row['FirstName'] . "</td>";
-    echo "<td>" . $row['LastName'] . "</td>";
     echo "<td>" . $row['TrainedBy'] . "</td>";
     echo "<td>" . $row['Annotations'] . "</td>";
     echo "<td>" . $row['SchoolType'] . "</td>";
@@ -347,7 +350,10 @@ while($row = mysqli_fetch_array($search_result)) {
     echo "<td>" . $row['EmailSent'] . "</td>";
     echo "<td>" . $row['ReplyDate'] . "</td>";
     echo "<td>" . $row['TrainingBooked'] . "</td>";
-
+	echo "<td>".$row['Address'] . "</td>";
+	echo "<td>".$row['Suburb'] . "</td>";
+    echo "<td>".$row['City'] ."</td>";
+    echo "<td>".$row['Country'] ."</td>";
     echo "</tr>";
 	}
 echo "</table>";
@@ -357,14 +363,6 @@ echo "</table>";
       </div>
       <!-- /.container-fluid -->
 
-      <!-- Sticky Footer -->
-      <footer class="sticky-footer">
-        <div class="container my-auto">
-          <div class="copyright text-center my-auto">
-            <span>Copyright © Your Website 2019</span>
-          </div>
-        </div>
-      </footer>
 
     </div>
     <!-- /.content-wrapper -->
