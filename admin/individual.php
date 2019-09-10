@@ -52,7 +52,7 @@ $query =  "
 
 }
 else{
-echo '<script>alert("Please enter the something in the damn fields");</script>';	
+echo '<script>alert("Please enter the something in the bloody fields");</script>';	
 }
 
 
