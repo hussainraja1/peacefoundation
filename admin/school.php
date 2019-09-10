@@ -56,14 +56,14 @@ $query =  "
 	address.suburb='$suburb',
 	address.city='$city',
 	address.country='$country'
-	WHERE nonmember.NonMemberID=address.addressid
+	WHERE nonmember.NonMemberID=address.id
 	AND nonmember.nonmemberid = $nid;";
 	
 	$search_result = filterTable($query);
 
 }
 else{
-echo '<script>alert("Please enter the something in the fields");</script>';	
+echo '<script>alert("Please enter the something in the old fields");</script>';
 }
 }	
 }
