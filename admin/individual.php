@@ -56,8 +56,6 @@ echo '<script>alert("Please enter the something in the fields");</script>';
 }
 }		
 }
-else{
-}
 if(isset($_POST['search']) && isset($_POST['searchIN']))
 {
 	$searchColumn = $_POST['searchIN'];
@@ -91,7 +89,7 @@ $connect = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATAB
 if ( mysqli_connect_errno() ) {
 	// If there is an error with the connection, stop the script and display the error.
 	die ('Failed to connect to MySQL: ' . mysqli_connect_error());
-    exit();
+    /*exit();*/
 
 }
     $filter_Result = mysqli_query($connect, $query);
