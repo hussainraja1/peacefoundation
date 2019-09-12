@@ -313,7 +313,7 @@ overflow-y:scroll;
 <th>City</th>
 <th>Country</th>
 </tr>";
-
+if($_SESSION['membertype'] == "admin"){
 while($row = mysqli_fetch_array($search_result)) {
     echo "<tr><form action=school.php method=post>";
     echo "<td><input readonly type=text name=schoolid value='" . $row['SchoolID'] . "'</td>";
@@ -345,6 +345,36 @@ while($row = mysqli_fetch_array($search_result)) {
     echo "</tr>";
 	}
 echo "</table>";
+}
+else if($_SESSION['membertype'] == "volunteer"){
+while($row = mysqli_fetch_array($search_result)) {
+   
+    echo "<td>" . $row['SchoolID'] . "</td>";
+    echo "<td>" . $row['SchoolName'] . "</td>";
+    echo "<td>" . $row['TrainedBy'] . "</td>";
+    echo "<td>" . $row['Annotations'] . "</td>";
+    echo "<td>" . $row['SchoolType'] . "</td>";
+    echo "<td>" . $row['PartnershipID'] . "</td>";
+    echo "<td>" . $row['DecileRating'] . "</td>";
+    echo "<td>" . $row['MaoriPercentage'] . "</td>";
+    echo "<td>" . $row['FullTraining'] . "'</td>";
+    echo "<td>" . $row['RevisitTraining'] . "</td>";
+    echo "<td>" . $row['PrimaryContact'] . "</td>";
+    echo "<td>" . $row['Principal'] . "</td>";
+    echo "<td>" . $row['PrincipalEmail'] . "</td>";
+    echo "<td>" . $row['PhoneNumber'] . "</td>";
+    echo "<td>" . $row['Interest'] . "</td>";
+    echo "<td>" . $row['EmailSent'] . "</td>";
+    echo "<td>" . $row['ReplyDate'] . "</td>";
+    echo "<td>" . $row['TrainingBooked'] . "</td>";
+	echo "<td>".$row['Address'] . "</td>";
+	echo "<td>".$row['Suburb'] . "</td>";
+    echo "<td>".$row['City'] . "</td>";
+    echo "<td>".$row['Country'] . "</td>";
+    echo "</tr>";
+	}
+echo "</table>";
+}
 ?>
         </form>
         </div>
