@@ -92,7 +92,7 @@ else
         <div class="dropdown-menu" aria-labelledby="pagesDropdown">
           <h6 class="dropdown-header">Display & Edit:</h6>
           <a class="dropdown-item" href="tables.php">Display Members</a>
-          <a class="dropdown-item" href="edituser.php">Edit Members</a>
+          <a class="dropdown-item" href="edituser.php">Add Members</a>
           <a class="dropdown-item" href="resetp.php">User Password Reset</a>
           <div class="dropdown-divider"></div>
           <h6 class="dropdown-header">Admin Settings:</h6>
@@ -200,14 +200,6 @@ else
       </div>
       <!-- /.container-fluid -->
 
-      <!-- Sticky Footer -->
-      <footer class="sticky-footer">
-        <div class="container my-auto">
-          <div class="copyright text-center my-auto">
-            <span>Copyright © Your Website 2019</span>
-          </div>
-        </div>
-      </footer>
 
     </div>
     <!-- /.content-wrapper -->

@@ -6,26 +6,11 @@ if (!isset($_SESSION['loggedin'])) {
 	header('Location: index.php');
 	exit();
 }
-else if ($_SESSION['membertype'] == "school"){
-	header('Location: school.php');
-	exit();
-}
-else if ($_SESSION['membertype'] == "organisation"){
-	header('Location: organisation.php');
-	exit();
-}
-else if ($_SESSION['membertype'] == "admin"){
-	header('Location: admin.php');
-	exit();
-}
 
 include('db.php');
 
 // We don't have the password or email info stored in sessions so instead we can get the results from the database.
 $stmt = $con->prepare('SELECT password, email, membertype FROM accounts WHERE id = ?');
-$individual = $con->prepare('SELECT  Title, FirstName, LastName, PhoneNum, DOB, Comments FROM nonmember WHERE id = ?');
-$school = $con->prepare('SELECT SchoolName FROM school WHERE id = ?');
-$organisation = $con->prepare('SELECT OrgName, Email FROM organisation WHERE id = ?');
 
 // In this case we can use the account ID to get the account info.
 $stmt->bind_param('i', $_SESSION['id']);
@@ -34,27 +19,6 @@ $stmt->bind_result($password, $email,$membertype);
 $stmt->fetch();
 $stmt->close();
 
-if($membertype == "individual"){
-	$individual->bind_param('i', $_SESSION['id']);
-	$individual->execute();
-	$individual->bind_result($title,$firstname,$lastname,$phone,$DOB,$comment);
-	$individual->fetch();
-	$individual->close();
-}
-if($membertype == "school"){
-	$school->bind_param('i', $_SESSION['id']);
-	$school->execute();
-	$school->bind_result($firstname);
-	$school->fetch();
-	$school->close();
-}
-if($membertype == "organisation"){
-	$organisation->bind_param('i', $_SESSION['id']);
-	$organisation->execute();
-	$organisation->bind_result($firstname,$email);
-	$organisation->fetch();
-	$organisation->close();
-}
 
 ?>
 <!DOCTYPE html>
@@ -74,26 +38,23 @@ if($membertype == "organisation"){
 			</div>
 		</nav>
 		<div class="content">
-			<h2>Profile Page for INDIVIDUAL</h2>
-			<div>
-				<p>Your account details are below:</p>
-				<table>
-					<tr>
-						<td>Username:</td>
-						<td><?=$_SESSION['name']?></td>
-					</tr>
-					<tr>
-						<td>Email:</td>
-						<td><?=$email?></td>
-					</tr>
-					<tr>
-						<td>Member Type:</td>
-						<td><?=$membertype?></td>
-					</tr>
-		
+<?php
+if($_SESSION['membertype'] == "admin" || $_SESSION['membertype'] == "volunteer"){
+	echo "Username: ";
+	echo $_SESSION['name'];"<br>";
+	echo "<br>Email: ";
+	echo $email;
+	echo"<br><a href='admin/index.php'>Admin Panel</a><br>";
+	
+}
+else{
+	echo "Username:<br>";
+	echo $_SESSION['name'];"<br>";
+	echo "Email:<br>";
+	echo $email;"<br>";
+}
 
-				</table>
-			</div>
+?>
 		</div>
 	</body>
 </html>
