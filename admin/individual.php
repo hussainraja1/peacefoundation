@@ -102,6 +102,20 @@ if ( mysqli_connect_errno() ) {
 <!DOCTYPE html>
 <html>
     <head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<script>
+$(document).ready(function(){
+  $("#individualB").click(function(){
+    $("#tableview").hide();
+	$("#individual").show();
+  });
+  $("#viewT").click(function(){
+    $("#tableview").show();
+	$("#individual").hide();
+  });
+});
+</script>
         <style>
 table {
   border-collapse: collapse;
@@ -199,8 +213,7 @@ overflow-y:scroll;
         </a>
         <div class="dropdown-menu" aria-labelledby="pagesDropdown">
           <h6 class="dropdown-header">Display & Edit:</h6>
-          <a class="dropdown-item" href="tables.php">Display Members</a>
-          <a class="dropdown-item" href="edituser.php">Add Members</a>
+          <a class="dropdown-item" href="tables.php">Display&Edit Members</a>
           <a class="dropdown-item" href="resetp.php">User Password Reset</a>
           <div class="dropdown-divider"></div>
           <h6 class="dropdown-header">Admin Settings:</h6>
@@ -217,15 +230,20 @@ overflow-y:scroll;
 
     <div id="content-wrapper">
 
-      <div class="container-fluid">
 		  
     </head>
     <body>
-        
+	
+        <div class="container-fluid" id="tableview">
+			<?php
+			if($_SESSION['membertype'] == "admin"){
+			echo "<button id='individualB'>Add New Member</button> <b><-- Click to add a new member</b><br><br>";
+			}
+			?>
+
         <form action="individual.php" method="post">
 			
-			<p>Please select the the column you want to search in, type in the keyword and click filter button to search:</p>
-<br>  
+			<p><b>Please select the the column you want to search in, type in the keyword and click filter button to search:</b></p>
 			<select name="searchIN">
   <option  value="nonmember.NonMemberID">Member ID</option>
   <option  value="nonmember.Title">Title</option>
@@ -240,14 +258,14 @@ overflow-y:scroll;
   <option  value="address.Country"> Country</option>
 
 </select>
-<br>           
 		   <input type="text" name="valueToSearch" placeholder="Keyword To Search"><br><br>
 
-            <input type="submit" name="search" value="Filter"><br><br>
+            <input type="submit" name="search" value="Filter">
             <input type="submit" name="all" value="Show All Rows"><br><br>
+
 			
-			
-<div class ="tablecontent">
+
+<div class ="tablecontent" id= "tableview">
      <?php          echo "<table width='100%'>
 <tr>
 <th>NonMemberID</th>
@@ -311,6 +329,38 @@ echo "</table>";
         </form>
         </div>
       </div>
+	  
+	  	<?php
+		
+	if($_SESSION['membertype'] == "admin"){
+	
+echo '<div class ="tablecontent" style="display: none" id="individual"><b>Please fill in the member information and click Create button</b><br>';
+
+echo '<form method="post" action="edituser.php">';
+echo "<table width='100%'>";
+echo '<tr>';
+echo '<th><input type="text" placeholder="Enter Username" name="username" required></th>';
+echo '<th><input type="text" placeholder="Enter Password" name="password" required></th>';
+echo '<th><input type="text" placeholder="Enter Email" name="email" required></th>';
+echo '<th><input type="text" placeholder="Enter Title Eg. Mr/Mrs" name="title" required></th>';
+echo '<th><input type="text" placeholder="Enter First Name" name="firstname" required></th>';
+echo '<th><input type="text" placeholder="Enter Last Name" name="lastname" required></th>';
+echo '<th><input type="text" placeholder="Enter Phone Number" name="phonenumber" required></th>';
+echo '<th><input type="date" placeholder="Enter Date of Birth" name="dob" required></th>';
+echo '<th><input type="text" placeholder="Enter Comments" name="comments" required></th>';
+echo '<th><input type="text" placeholder="Enter Address" name="address" required></th>';
+echo '<th><input type="text" placeholder="Enter City" name="city" required></th>';
+echo '<th><input type="text" placeholder="Enter Suburb" name="suburb" required></th>';
+echo '<th><input type="text" placeholder="Enter Country" name="country" required></th>';
+echo '<td><b><input type="submit" value ="Create" name="submitButtonIndividual"></b></th>';
+echo '</tr>';
+echo '</table>';
+echo '</form>';
+echo '<br><button id="viewT"><b>View Tables</b></button><br><br>';
+
+echo '</div>';
+	}
+?>
       <!-- /.container-fluid -->
 
 

@@ -128,6 +128,22 @@ if ( mysqli_connect_errno() ) {
 <!DOCTYPE html>
 <html>
     <head>
+	
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<script>
+$(document).ready(function(){
+  $("#individualB").click(function(){
+    $("#tableview").hide();
+	$("#school").show();
+  });
+  $("#viewT").click(function(){
+    $("#tableview").show();
+	$("#school").hide();
+  });
+});
+</script>
+	
         <style>
 
 table {
@@ -226,8 +242,7 @@ overflow-y:scroll;
         </a>
         <div class="dropdown-menu" aria-labelledby="pagesDropdown">
           <h6 class="dropdown-header">Display & Edit:</h6>
-          <a class="dropdown-item" href="tables.php">Display Members</a>
-          <a class="dropdown-item" href="edituser.php">Add Members</a>
+          <a class="dropdown-item" href="tables.php">Display&Edit Members</a>
           <a class="dropdown-item" href="resetp.php">User Password Reset</a>
           <div class="dropdown-divider"></div>
           <h6 class="dropdown-header">Admin Settings:</h6>
@@ -243,16 +258,18 @@ overflow-y:scroll;
     </ul>
 
     <div id="content-wrapper">
-
-      <div class="container-fluid">
 		  
     </head>
     <body>
-        
+        <div class="container-fluid" id="tableview">
+			<?php
+			if($_SESSION['membertype'] == "admin"){
+			echo "<button id='individualB'>Add New Member</button> <b><-- Click to add a new member</b><br><br>";
+			}
+			?>
         <form action="school.php" method="post">
 			
-			<p>Please select the the column you want to search in, type in the keyword and click filter button to search:</p>
-         <br>  
+		<p><b>Please select the the column you want to search in, type in the keyword and click filter button to search:</b></p> 
 			<select name="searchIN">
   <option  value="school.SchoolID">School ID</option>
   <option  value="school.SchoolName">School Name</option>
@@ -379,6 +396,49 @@ echo "</table>";
         </form>
         </div>
       </div>
+	  
+	  	  	<?php
+		
+	if($_SESSION['membertype'] == "admin"){
+
+echo '<div class ="tablecontent" style="display: none" id="school"><b>Please fill in the member information and click Create button</b><br>';
+echo '<form method="post" action="edituser.php">';
+echo '<table width="100%">';
+echo '<tr>';
+echo '<th><input type="text" placeholder="Enter Username" name="username" required></th>';
+echo '<th><input type="text" placeholder="Enter Password" name="password" required></th>';
+echo '<th><input type="text" placeholder="Enter Email" name="email" required></th>';
+echo '<th><input type="text" placeholder="School Name" name="schoolname" required></th>';
+echo '<th><input type="text" placeholder="Trained By" name="trainedby" required></th>';
+echo '<th><input type="text" placeholder="Annotations" name="annotations" required></th>';
+echo '<th><input type="text" placeholder="School Type" name="schooltype" required></th>';
+echo '<th><input type="text" placeholder="Partnership ID" name="partnershipID" required></th>';
+echo '<th><input type="text" placeholder="decilerating" name="decilerating" required></th>';
+echo '<th><input type="text" placeholder="Maori Percentage" name="maoripercentage" required></th>';
+echo '<th><input type="text" placeholder="Full Training" name="fulltraining" required></th>';
+echo '<th><input type="text" placeholder="Revisit Training" name="revisittraining" required></th>';
+echo '<th><input type="text" placeholder="Primary Contact" name="primarycontact" required></th>';
+echo '<th><input type="text" placeholder="Principal" name="principal" required></th>';
+echo '<th><input type="text" placeholder="Principal Email" name="principalemail" required></th>';
+echo '<th><input type="text" placeholder="Phone Number" name="phonenumber" required></th>';
+echo '<th><input type="text" placeholder="Interest" name="interest" required></th>';
+echo '<th><input type="text" placeholder="Email Sent" name="emailsent" required></th>';
+echo '<th><input type="text" placeholder="Reply Date" name="replydate" required></th>';
+echo '<th><input type="text" placeholder="Training Booked" name="trainingbooked" required></th>';
+echo '<th><input type="text" placeholder="Address" name="address" required></th>';
+echo '<th><input type="text" placeholder="City" name="city" required></th>';
+echo '<th><input type="text" placeholder="Suburb" name="suburb" required></th>';
+echo '<th><input type="text" placeholder="Country" name="country" required></th>';
+echo '<td><input type="submit" value ="Create" name="submitButtonSchool"></th>';
+echo '</tr>';
+echo '</table>';
+echo '</form>';
+echo '<br><button id="viewT"><b>View Tables</b></button><br><br>';
+
+echo '</div>';
+
+	}
+?>
       <!-- /.container-fluid -->
 
 

@@ -103,6 +103,22 @@ if ( mysqli_connect_errno() ) {
 <!DOCTYPE html>
 <html>
     <head>
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<script>
+$(document).ready(function(){
+  $("#individualB").click(function(){
+    $("#tableview").hide();
+	$("#organisation").show();
+  });
+  $("#viewT").click(function(){
+    $("#tableview").show();
+	$("#organisation").hide();
+  });
+});
+</script>
+	
         <style>
 table {
   border-collapse: collapse;
@@ -200,8 +216,7 @@ overflow-y:scroll;
         </a>
         <div class="dropdown-menu" aria-labelledby="pagesDropdown">
           <h6 class="dropdown-header">Display & Edit:</h6>
-          <a class="dropdown-item" href="tables.php">Display Members</a>
-          <a class="dropdown-item" href="edituser.php">Add Members</a>
+          <a class="dropdown-item" href="tables.php">Display&Edit Members</a>
           <a class="dropdown-item" href="resetp.php">User Password Reset</a>
           <div class="dropdown-divider"></div>
           <h6 class="dropdown-header">Admin Settings:</h6>
@@ -217,16 +232,18 @@ overflow-y:scroll;
     </ul>
 
     <div id="content-wrapper">
-
-      <div class="container-fluid">
 		  
     </head>
     <body>
-        
+         <div class="container-fluid" id="tableview">
+			<?php
+			if($_SESSION['membertype'] == "admin"){
+			echo "<button id='individualB'>Add New Member</button> <b><-- Click to add a new member</b><br><br>";
+			}
+			?>
         <form action="organisation.php" method="post">
 			
-			<p>Please select the the column you want to search in, type in the keyword and click filter button to search:</p>
-			  <br>
+			<p><b>Please select the the column you want to search in, type in the keyword and click filter button to search:</b></p> 
 						<select name="searchIN">
   <option  value="organisation.OrgID">Organisation ID</option>
   <option  value="organisation.OrgName">Organisation Name</option>
@@ -310,6 +327,36 @@ echo "</table>";
         </form>
         </div>
       </div>
+	  
+	  <?php
+		
+	if($_SESSION['membertype'] == "admin"){
+
+echo '<div class ="tablecontent" style="display: none" id="organisation"><b>Please fill in the member information and click Create button</b><br>
+<form method="post" action="edituser.php">
+<table width="100%">
+<tr>
+<th><input type="text" placeholder="Enter Username" name="username" required></th>
+<th><input type="text" placeholder="Enter Password" name="password" required></th>
+<th><input type="text" placeholder="Enter Email" name="email" required></th>
+<th><input type="text" placeholder="Organisation Name" name="orgname" required></th>
+<th><input type="text" placeholder="Enter Phone Number" name="phonenumber" required></th>
+<th><input type="text" placeholder="Enter Response" name="response" required></th>
+<th><input type="text" placeholder="Enter Annotations" name="annotations" required></th>
+<th><input type="text" placeholder="Organisation Membership" name="orgmembership" required></th>
+<th><input type="text" placeholder="Enter Address" name="address" required></th>
+<th><input type="text" placeholder="Enter City" name="city" required></th>
+<th><input type="text" placeholder="Enter Suburb" name="suburb" required></th>
+<th><input type="text" placeholder="Enter Country" name="country" required></th>
+<td><input type="submit" value ="Create" name="submitButtonOrg">
+</tr>
+</table>
+</form>
+<br><button id="viewT"><b>View Tables</b></button><br><br>
+</div>';
+
+	}
+?>
       <!-- /.container-fluid -->
 
 
