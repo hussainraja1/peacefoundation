@@ -21,17 +21,18 @@ if($_SESSION['membertype'] == "admin"){
 if(isset($_POST['sub'])){
 $schoolid = $_POST['schoolid'];
 $schoolname = $_POST['schoolname'];
-$trainedby = $_POST['schooltrainedby'];
+$trainedby = $_POST['trainedby'];
 $annotations = $_POST['annotations'];
 $schooltype = $_POST['schooltype'];
 $partnershipid = $_POST['partnershipid'];
 $decile = $_POST['decilerating'];	
-$maori = $_POST['maori'];
+$maori = $_POST['maoripercentage'];
 $fulltraining = $_POST['fulltraining'];
 $revisittraining = $_POST['revisittraining'];
 $primarycontact = $_POST['primarycontact'];
 $principal = $_POST['principal'];
 $principalemail = $_POST['principalemail'];
+$phonenum = $_POST['phonenum'];
 $interest = $_POST['interest'];
 $emailsent = $_POST['emailsent'];
 $replydate = $_POST['replydate'];
@@ -50,20 +51,30 @@ $query =  "
 	school.annotations='$annotations',
 	school.schooltype='$schooltype',
 	school.partnershipid='$partnershipid',
-	school.decile='$decile',
-	school.decile='$decile',
-	address.address='$address',
+	school.DecileRating='$decile',
+    school.MaoriPercentage='$maori',
+    school.FullTraining='$fulltraining',            
+    school.RevisitTraining='$revisittraining',
+    school.PrimaryContact='$primarycontact',
+    school.Principal='$principal',
+	school.PrincipalEmail='$principalemail',
+	school.PhoneNumber='$phonenum',
+    school.Interest='$interest',
+    school.EmailSent='$emailsent',
+    school.ReplyDate='$emailsent',
+    school.TrainingBooked='$trainingbooked',
+	address.address=' $address',
 	address.suburb='$suburb',
 	address.city='$city',
 	address.country='$country'
-	WHERE nonmember.NonMemberID=address.id
-	AND nonmember.nonmemberid = $nid;";
+	WHERE school.id=address.id
+	AND school.schoolid = $schoolid;";
 	
 	$search_result = filterTable($query);
 
 }
 else{
-echo '<script>alert("Please enter the something in the old fields");</script>';
+echo '<script>alert("Please enter the something in the fields");</script>';
 }
 }	
 }
@@ -107,7 +118,7 @@ $connect = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATAB
 if ( mysqli_connect_errno() ) {
 	// If there is an error with the connection, stop the script and display the error.
 	die ('Failed to connect to MySQL: ' . mysqli_connect_error());
-    exit();
+    /*exit();*/
 
 }
     $filter_Result = mysqli_query($connect, $query);
@@ -138,7 +149,7 @@ th {
 }
 .tablecontent { overflow-x:scroll;
 overflow-y:scroll;
-		width:75%;
+    width:100%;
 	height:500px;
 	border-style: inset;
 	}
@@ -272,7 +283,7 @@ overflow-y:scroll;
 			<select name="searchIN">
   <option  value="school.SchoolID">School ID</option>
   <option  value="school.SchoolName">School Name</option>
-  <option   value="school.PhoneNumber">Phone Number</option>
+  <option  value="school.PhoneNumber">Phone Number</option>
   <option  value="school.TrainedBy"> Trained By</option>
   <option  value="school.Annotations">Annotations</option>
   <option  value="school.SchoolType"> School Type </option>
@@ -331,29 +342,33 @@ overflow-y:scroll;
 </tr>";
 
 while($row = mysqli_fetch_array($search_result)) {
-    echo "<tr>";
-    echo "<td>" . $row['SchoolID'] . "</td>";
-    echo "<td>" . $row['SchoolName'] . "</td>";
-    echo "<td>" . $row['TrainedBy'] . "</td>";
-    echo "<td>" . $row['Annotations'] . "</td>";
-    echo "<td>" . $row['SchoolType'] . "</td>";
-    echo "<td>" . $row['PartnershipID'] . "</td>";
-    echo "<td>" . $row['DecileRating'] . "</td>";
-    echo "<td>" . $row['MaoriPercentage'] . "</td>";
-    echo "<td>" . $row['FullTraining'] . "</td>";
-    echo "<td>" . $row['RevisitTraining'] . "</td>";
-    echo "<td>" . $row['PrimaryContact'] . "</td>";
-    echo "<td>" . $row['Principal'] . "</td>";
-    echo "<td>" . $row['PrincipalEmail'] . "</td>";
-    echo "<td>" . $row['PhoneNumber'] . "</td>";
-    echo "<td>" . $row['Interest'] . "</td>";
-    echo "<td>" . $row['EmailSent'] . "</td>";
-    echo "<td>" . $row['ReplyDate'] . "</td>";
-    echo "<td>" . $row['TrainingBooked'] . "</td>";
-	echo "<td>".$row['Address'] . "</td>";
-	echo "<td>".$row['Suburb'] . "</td>";
-    echo "<td>".$row['City'] ."</td>";
-    echo "<td>".$row['Country'] ."</td>";
+    echo "<tr><form action=school.php method=post>";
+    echo "<td><input readonly type=text name=schoolid value='" . $row['SchoolID'] . "'</td>";
+    echo "<td><input type=text name=schoolname value='" . $row['SchoolName'] . "'</td>";
+    echo "<td><input type=text name=trainedby value='" . $row['TrainedBy'] . "'</td>";
+    echo "<td><input type='text' name=annotations value='" . $row['Annotations'] . "'</td>";
+    echo "<td><input type='text' name=schooltype value='" . $row['SchoolType'] . "'</td>";
+    echo "<td><input type='text' name=partnershipid value='" . $row['PartnershipID'] . "'</td>";
+    echo "<td><input type='text' name=decilerating value='" . $row['DecileRating'] . "'</td>";
+    echo "<td><input type='text' name=maoripercentage value='" . $row['MaoriPercentage'] . "'</td>";
+    echo "<td><input type='text' name=fulltraining value='" . $row['FullTraining'] . "'</td>";
+    echo "<td><input type='text' name=revisittraining value='" . $row['RevisitTraining'] . "'</td>";
+    echo "<td><input type='text' name=primarycontact value='" . $row['PrimaryContact'] . "'</td>";
+    echo "<td><input type='text' name=principal value='" . $row['Principal'] . "'</td>";
+    echo "<td><input type='text' name=principalemail value='" . $row['PrincipalEmail'] . "'</td>";
+    echo "<td><input type='text' name=phonenum value='" . $row['PhoneNumber'] . "'</td>";
+    echo "<td><input type='text' name=interest value='" . $row['Interest'] . "'</td>";
+    echo "<td><input type='text' name=emailsent value='" . $row['EmailSent'] . "'</td>";
+    echo "<td><input type='text' name=replydate value='" . $row['ReplyDate'] . "'</td>";
+    echo "<td><input type='text' name=trainingbooked value='" . $row['TrainingBooked'] . "'</td>";
+	echo "<td><input type=text name=address value='".$row['Address'] . "'</td>";
+	echo "<td><input type=text name=suburb value='".$row['Suburb'] . "'</td>";
+    echo "<td><input type=text name=city value='".$row['City'] . "'</td>";
+    echo "<td><input type=text name=country value='".$row['Country'] . "'</td>";
+    echo "<td><input type=submit name='sub'>";
+    echo "</form></tr>";
+
+
     echo "</tr>";
 	}
 echo "</table>";

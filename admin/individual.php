@@ -45,7 +45,7 @@ $query =  "
 	address.suburb='$suburb',
 	address.city='$city',
 	address.country='$country'
-	WHERE nonmember.NonMemberID=address.addressid
+	WHERE nonmember.id=address.id
 	AND nonmember.nonmemberid = $nid;";
 	
 	$search_result = filterTable($query);
@@ -56,6 +56,7 @@ echo '<script>alert("Please enter the something in the fields");</script>';
 }
 }		
 }
+
 if(isset($_POST['search']) && isset($_POST['searchIN']))
 {
 	$searchColumn = $_POST['searchIN'];
