@@ -52,9 +52,22 @@ $query =  "
 else{
 echo '<script>alert("Please enter the something in the fields");</script>';	
 }
-
-
 }
+
+//If Remove Button is set, remove the associated contents of the nonmember, account and address tables
+else if(isset($_POST['remove'])){
+
+$accID = $_POST['accID'];	
+
+	$query ="DELETE organisation, address, accounts FROM organisation 
+LEFT join address on organisation.id = address.id
+LEFT join accounts on organisation.id = accounts.id
+where organisation.id = $accID;";
+
+
+    $search_result = filterTable($query);
+
+}		
 }
 else{
 }
@@ -65,7 +78,7 @@ if(isset($_POST['search']) && isset($_POST['searchIN']))
     $valueToSearch = $_POST['valueToSearch'];
     // search in all table columns
     // using concat mysql function
-    $query = "SELECT organisation.OrgID,organisation.OrgName,organisation.PhoneNum,organisation.Response,organisation.Annotations,organisation.OrgMembership,address.Address,address.Suburb,address.City,address.Country
+    $query = "SELECT organisation.OrgID,organisation.id,organisation.OrgName,organisation.PhoneNum,organisation.Response,organisation.Annotations,organisation.OrgMembership,address.Address,address.Suburb,address.City,address.Country
 	FROM address , organisation
 	WHERE  address.id =organisation.id AND $searchColumn LIKE '%".$valueToSearch."%'";
 
@@ -74,11 +87,55 @@ if(isset($_POST['search']) && isset($_POST['searchIN']))
 }
  else {
 
-    $query = "SELECT organisation.OrgID,organisation.OrgName,organisation.PhoneNum,organisation.Response,organisation.Annotations,organisation.OrgMembership,address.Address,address.Suburb,address.City,address.Country
+    $query = "SELECT organisation.OrgID,organisation.id,organisation.OrgName,organisation.PhoneNum,organisation.Response,organisation.Annotations,organisation.OrgMembership,address.Address,address.Suburb,address.City,address.Country
 	FROM address , organisation
 	WHERE  address.id = organisation.id";
 	
     $search_result = filterTable($query);
+}
+
+if(isset($_POST['submitButtonOrg'])){
+	include('../db.php');
+
+$username = mysqli_real_escape_string($con, $_REQUEST['username']);
+$password = mysqli_real_escape_string($con, $_REQUEST['password']);
+$email = mysqli_real_escape_string($con, $_REQUEST['email']);
+$membertype = "organisation";
+
+$orgname = mysqli_real_escape_string($con, $_REQUEST['orgname']);
+$phonenum = mysqli_real_escape_string($con, $_REQUEST['phonenumber']);
+$response = mysqli_real_escape_string($con, $_REQUEST['response']);
+$annotations = mysqli_real_escape_string($con, $_REQUEST['annotations']);
+$orgmembership = mysqli_real_escape_string($con, $_REQUEST['orgmembership']);
+
+$street = mysqli_real_escape_string($con, $_REQUEST['street']);
+$city = mysqli_real_escape_string($con, $_REQUEST['city']);
+$zip = mysqli_real_escape_string($con, $_REQUEST['zip']);
+$country = mysqli_real_escape_string($con, $_REQUEST['country']);
+
+ 
+// Attempt insert query execution
+$sql = "INSERT INTO accounts (id, Username, Password,Email,membertype) VALUES (Null, '$username','$password', '$email','$membertype')";
+
+if(mysqli_query($con, $sql)){
+$user_id = mysqli_insert_id($con);
+$sql_information = "INSERT INTO organisation (OrgID, id, OrgName,PhoneNum, Response, Annotations, OrgMembership) VALUES (Null, '$user_id','$orgname','$phonenum','$response', '$annotations', '$orgmembership')";
+$sql_address = "INSERT INTO address (AddressID, id, Address,City,Suburb,Country) VALUES (Null, '$user_id','$street', '$city','$zip','$country')";
+
+	if(mysqli_query($con, $sql_information) && mysqli_query($con, $sql_address) ){
+echo '<script>alert("Record added successfully");</script>';	
+	}
+	else{
+	echo '<script>alert("Record cannot be added");</script>';	
+
+	}
+	
+} else{
+	echo '<script>alert("Record cannot be added");</script>';	
+}
+ 
+// Close connection
+mysqli_close($con);
 }
 
 // function to connect and execute the query
@@ -257,7 +314,6 @@ overflow-y:scroll;
   <option  value="address.Country"> Country</option>
 
 </select>  
-<br>
             <input type="text" name="valueToSearch" placeholder="Keyword To Search"><br><br>
 
             <input type="submit" name="search" value="Filter"><br><br>
@@ -268,6 +324,7 @@ overflow-y:scroll;
      <?php          echo "<table style='width: 100%'>
 <tr>
 <th>OrgID</th>
+<th>Account ID</th>
 <th>OrgName</th>
 <th>Phone Number</th>
 <th>Response</th>
@@ -284,6 +341,7 @@ while($row = mysqli_fetch_array($search_result)) {
 	
 	echo "<tr><form action=organisation.php method=post>";
     echo "<td><input readonly type=text name=orgid value='".$row['OrgID'] . "'</td>";
+    echo "<td><input readonly type=text name=accID value='".$row['id'] . "'</td>";
     echo "<td><input type=text name=orgname value='".$row['OrgName'] . "'</td>";
     echo "<td><input type=text name=phonenum value='".$row['PhoneNum'] . "'</td>";
     echo "<td><input type=text name=response value='".$row['Response'] . "'</td>";
@@ -293,7 +351,9 @@ while($row = mysqli_fetch_array($search_result)) {
 	echo "<td><input type=text name=suburb value='".$row['Suburb'] . "'</td>";
     echo "<td><input type=text name=city value='".$row['City'] . "'</td>";
     echo "<td><input type=text name=country value='".$row['Country'] . "'</td>";
-	echo "<td><input type=submit name='sub'>";
+	echo "<td><input type=submit name='sub'></td>";
+	echo "<td><input type=submit name='remove' value='Remove'></td>";
+
 	echo "</form></tr>";
 
 
@@ -306,6 +366,7 @@ while($row = mysqli_fetch_array($search_result)) {
 	
 	echo "<tr>";
     echo "<td>".$row['OrgID'] . "</td>";
+	echo "<td>".$row['id']. "</td>";
     echo "<td>".$row['OrgName'] . "</td>";
     echo "<td>".$row['PhoneNum'] . "</td>";
     echo "<td>".$row['Response'] . "</td>";
@@ -333,7 +394,7 @@ echo "</table>";
 	if($_SESSION['membertype'] == "admin"){
 
 echo '<div class ="tablecontent" style="display: none" id="organisation"><b>Please fill in the member information and click Create button</b><br>
-<form method="post" action="edituser.php">
+<form method="post" action="organisation.php">
 <table width="100%">
 <tr>
 <th><input type="text" placeholder="Enter Username" name="username" required></th>
@@ -344,9 +405,9 @@ echo '<div class ="tablecontent" style="display: none" id="organisation"><b>Plea
 <th><input type="text" placeholder="Enter Response" name="response" required></th>
 <th><input type="text" placeholder="Enter Annotations" name="annotations" required></th>
 <th><input type="text" placeholder="Organisation Membership" name="orgmembership" required></th>
-<th><input type="text" placeholder="Enter Address" name="address" required></th>
+<th><input type="text" placeholder="Enter Address" name="street" required></th>
 <th><input type="text" placeholder="Enter City" name="city" required></th>
-<th><input type="text" placeholder="Enter Suburb" name="suburb" required></th>
+<th><input type="text" placeholder="Enter Suburb" name="zip" required></th>
 <th><input type="text" placeholder="Enter Country" name="country" required></th>
 <td><input type="submit" value ="Create" name="submitButtonOrg">
 </tr>

@@ -76,7 +76,23 @@ $query =  "
 else{
 echo '<script>alert("Please enter the something in the fields");</script>';
 }
-}	
+}
+
+//If Remove Button is set, remove the associated contents of the nonmember, account and address tables
+else if(isset($_POST['remove'])){
+
+$accID = $_POST['accID'];	
+
+	$query ="DELETE school, address, accounts FROM school 
+LEFT join address on school.id = address.id
+LEFT join accounts on school.id = accounts.id
+where school.id = $accID;";
+
+
+    $search_result = filterTable($query);
+
+}		
+	
 }
 else{
 }
@@ -87,7 +103,7 @@ if(isset($_POST['search']) && isset($_POST['searchIN']))
     $valueToSearch = $_POST['valueToSearch'];
     // search in all table columns
     // using concat mysql function
-    $query = "SELECT school.SchoolID,school.SchoolName,school.TrainedBy,school.Annotations,school.SchoolType,school.PartnershipID,school.DecileRating,
+    $query = "SELECT school.SchoolID,school.id,school.SchoolName,school.TrainedBy,school.Annotations,school.SchoolType,school.PartnershipID,school.DecileRating,
 	school.MaoriPercentage,school.FullTraining,school.RevisitTraining,school.PrimaryContact,school.Principal,school.PrincipalEmail
 	,school.PhoneNumber,school.Interest,school.EmailSent,school.ReplyDate,school.TrainingBooked,address.Address,address.City,address.Suburb,address.Country
 FROM address ,school
@@ -97,13 +113,73 @@ WHERE  address.id =school.id AND $searchColumn LIKE '%".$valueToSearch."%'";
 }
  else {
 
-    $query = "SELECT school.SchoolID,school.SchoolName,school.TrainedBy,school.Annotations,school.SchoolType,school.PartnershipID,school.DecileRating,
+    $query = "SELECT school.SchoolID,school.id,school.SchoolName,school.TrainedBy,school.Annotations,school.SchoolType,school.PartnershipID,school.DecileRating,
 	school.MaoriPercentage,school.FullTraining,school.RevisitTraining,school.PrimaryContact,school.Principal,school.PrincipalEmail,
 	school.PhoneNumber,school.Interest,school.EmailSent,school.ReplyDate,school.TrainingBooked,address.Address,address.City,address.Suburb,address.Country
 FROM address ,school
 WHERE  address.id =school.id";
 
     $search_result = filterTable($query);
+}
+
+if(isset($_POST['submitButtonSchool'])){
+	include('../db.php');
+
+$username = mysqli_real_escape_string($con, $_REQUEST['username']);
+$password = mysqli_real_escape_string($con, $_REQUEST['password']);
+$email = mysqli_real_escape_string($con, $_REQUEST['email']);
+$membertype = "school";
+
+$sname = mysqli_real_escape_string($con, $_REQUEST['schoolname']);
+$trainedby = mysqli_real_escape_string($con, $_REQUEST['trainedby']);
+$annotations = mysqli_real_escape_string($con, $_REQUEST['annotations']);
+$schooltype = mysqli_real_escape_string($con, $_REQUEST['schooltype']);
+$partnershipID = mysqli_real_escape_string($con, $_REQUEST['partnershipID']);
+$decilerating = mysqli_real_escape_string($con, $_REQUEST['decilerating']);
+$maoripercentage = mysqli_real_escape_string($con, $_REQUEST['maoripercentage']);
+$fulltraining = mysqli_real_escape_string($con, $_REQUEST['fulltraining']);
+$revisittraining = mysqli_real_escape_string($con, $_REQUEST['revisittraining']);
+$primarycontact = mysqli_real_escape_string($con, $_REQUEST['primarycontact']);
+$principal = mysqli_real_escape_string($con, $_REQUEST['principal']);
+$principalemail = mysqli_real_escape_string($con, $_REQUEST['principalemail']);
+$phonenum = mysqli_real_escape_string($con, $_REQUEST['phonenumber']);
+$interest = mysqli_real_escape_string($con, $_REQUEST['interest']);
+$emailsent = mysqli_real_escape_string($con, $_REQUEST['emailsent']);
+$replydate = mysqli_real_escape_string($con, $_REQUEST['replydate']);
+$trainingbooked = mysqli_real_escape_string($con, $_REQUEST['trainingbooked']);
+
+
+
+$street = mysqli_real_escape_string($con, $_REQUEST['street']);
+$suburb = mysqli_real_escape_string($con, $_REQUEST['suburb']);
+$city = mysqli_real_escape_string($con, $_REQUEST['city']);
+$country = mysqli_real_escape_string($con, $_REQUEST['country']);
+
+ 
+// Attempt insert query execution
+$sql = "INSERT INTO accounts (id, Username, Password,Email,membertype) VALUES (Null, '$username','$password', '$email','$membertype')";
+
+if(mysqli_query($con, $sql)){
+$user_id = mysqli_insert_id($con);
+$sql_information = "INSERT INTO school (SchoolID, id, SchoolName, TrainedBy,Annotations,SchoolType,PartnershipID,DecileRating,MaoriPercentage,FullTraining,RevisitTraining,PrimaryContact,Principal,PrincipalEmail,PhoneNumber,Interest,EmailSent,ReplyDate,TrainingBooked) 
+VALUES (Null, '$user_id','$sname','$trainedby','$annotations','$schooltype','$partnershipID','$decilerating','$maoripercentage','$fulltraining','$revisittraining','$primarycontact','$principal','$principalemail','$phonenum','$interest','$emailsent','$replydate','$trainingbooked')";
+$sql_address = "INSERT INTO address (AddressID, id, Address,Suburb,City,Country) VALUES (Null, '$user_id','$street', '$suburb', '$city','$country')";
+
+	if(mysqli_query($con, $sql_information) && mysqli_query($con, $sql_address) ){
+header("refresh:1"); 
+	echo '<script>alert("Record added successfully");</script>';	
+	}
+	else{
+	echo '<script>alert("Record cannot be added");</script>';	
+
+	}
+	
+} else{
+	echo '<script>alert("Record cannot be added");</script>';	
+}
+ 
+// Close connection
+mysqli_close($con);
 }
 
 // function to connect and execute the query
@@ -295,7 +371,6 @@ overflow-y:scroll;
   <option  value="address.Country"> Country</option>
 
 </select>
-<br>
 			<input type="text" name="valueToSearch" placeholder="Keyword To Search"><br><br>
 
 
@@ -308,6 +383,7 @@ overflow-y:scroll;
 	 echo "<table style='width: 100%'>
 <tr>
 <th>SchoolID</th>
+<th>Account ID</th>
 <th>School Name</th>
 <th>TrainedBy</th>
 <th>Annotations</th>
@@ -334,6 +410,7 @@ if($_SESSION['membertype'] == "admin"){
 while($row = mysqli_fetch_array($search_result)) {
     echo "<tr><form action=school.php method=post>";
     echo "<td><input readonly type=text name=schoolid value='" . $row['SchoolID'] . "'</td>";
+	echo "<td><input readonly type=text name=accID value='" . $row['id'] . "'</td>";
     echo "<td><input type=text name=schoolname value='" . $row['SchoolName'] . "'</td>";
     echo "<td><input type=text name=trainedby value='" . $row['TrainedBy'] . "'</td>";
     echo "<td><input type='text' name=annotations value='" . $row['Annotations'] . "'</td>";
@@ -341,21 +418,23 @@ while($row = mysqli_fetch_array($search_result)) {
     echo "<td><input type='text' name=partnershipid value='" . $row['PartnershipID'] . "'</td>";
     echo "<td><input type='text' name=decilerating value='" . $row['DecileRating'] . "'</td>";
     echo "<td><input type='text' name=maoripercentage value='" . $row['MaoriPercentage'] . "'</td>";
-    echo "<td><input type='text' name=fulltraining value='" . $row['FullTraining'] . "'</td>";
-    echo "<td><input type='text' name=revisittraining value='" . $row['RevisitTraining'] . "'</td>";
+    echo "<td><input type='date' name=fulltraining value='" . $row['FullTraining'] . "'</td>";
+    echo "<td><input type='date' name=revisittraining value='" . $row['RevisitTraining'] . "'</td>";
     echo "<td><input type='text' name=primarycontact value='" . $row['PrimaryContact'] . "'</td>";
     echo "<td><input type='text' name=principal value='" . $row['Principal'] . "'</td>";
     echo "<td><input type='text' name=principalemail value='" . $row['PrincipalEmail'] . "'</td>";
     echo "<td><input type='text' name=phonenum value='" . $row['PhoneNumber'] . "'</td>";
     echo "<td><input type='text' name=interest value='" . $row['Interest'] . "'</td>";
-    echo "<td><input type='text' name=emailsent value='" . $row['EmailSent'] . "'</td>";
-    echo "<td><input type='text' name=replydate value='" . $row['ReplyDate'] . "'</td>";
+    echo "<td><input type='date' name=emailsent value='" . $row['EmailSent'] . "'</td>";
+    echo "<td><input type='date' name=replydate value='" . $row['ReplyDate'] . "'</td>";
     echo "<td><input type='text' name=trainingbooked value='" . $row['TrainingBooked'] . "'</td>";
 	echo "<td><input type=text name=address value='".$row['Address'] . "'</td>";
 	echo "<td><input type=text name=suburb value='".$row['Suburb'] . "'</td>";
     echo "<td><input type=text name=city value='".$row['City'] . "'</td>";
     echo "<td><input type=text name=country value='".$row['Country'] . "'</td>";
-    echo "<td><input type=submit name='sub'>";
+    echo "<td><input type=submit name='sub'></td>";
+	echo "<td><input type=submit name='remove' value='Remove'></td>";
+
     echo "</form></tr>";
 
 
@@ -367,6 +446,7 @@ else if($_SESSION['membertype'] == "volunteer"){
 while($row = mysqli_fetch_array($search_result)) {
    
     echo "<td>" . $row['SchoolID'] . "</td>";
+	echo "<td>".$row['id']. "</td>";
     echo "<td>" . $row['SchoolName'] . "</td>";
     echo "<td>" . $row['TrainedBy'] . "</td>";
     echo "<td>" . $row['Annotations'] . "</td>";
@@ -402,7 +482,7 @@ echo "</table>";
 	if($_SESSION['membertype'] == "admin"){
 
 echo '<div class ="tablecontent" style="display: none" id="school"><b>Please fill in the member information and click Create button</b><br>';
-echo '<form method="post" action="edituser.php">';
+echo '<form method="post" action="school.php">';
 echo '<table width="100%">';
 echo '<tr>';
 echo '<th><input type="text" placeholder="Enter Username" name="username" required></th>';
@@ -415,17 +495,17 @@ echo '<th><input type="text" placeholder="School Type" name="schooltype" require
 echo '<th><input type="text" placeholder="Partnership ID" name="partnershipID" required></th>';
 echo '<th><input type="text" placeholder="decilerating" name="decilerating" required></th>';
 echo '<th><input type="text" placeholder="Maori Percentage" name="maoripercentage" required></th>';
-echo '<th><input type="text" placeholder="Full Training" name="fulltraining" required></th>';
-echo '<th><input type="text" placeholder="Revisit Training" name="revisittraining" required></th>';
+echo '<th><input type="date" placeholder="Full Training" name="fulltraining" required></th>';
+echo '<th><input type="date" placeholder="Revisit Training" name="revisittraining" required></th>';
 echo '<th><input type="text" placeholder="Primary Contact" name="primarycontact" required></th>';
 echo '<th><input type="text" placeholder="Principal" name="principal" required></th>';
 echo '<th><input type="text" placeholder="Principal Email" name="principalemail" required></th>';
 echo '<th><input type="text" placeholder="Phone Number" name="phonenumber" required></th>';
 echo '<th><input type="text" placeholder="Interest" name="interest" required></th>';
-echo '<th><input type="text" placeholder="Email Sent" name="emailsent" required></th>';
-echo '<th><input type="text" placeholder="Reply Date" name="replydate" required></th>';
+echo '<th><input type="date" placeholder="Email Sent" name="emailsent" required></th>';
+echo '<th><input type="date" placeholder="Reply Date" name="replydate" required></th>';
 echo '<th><input type="text" placeholder="Training Booked" name="trainingbooked" required></th>';
-echo '<th><input type="text" placeholder="Address" name="address" required></th>';
+echo '<th><input type="text" placeholder="Address" name="street" required></th>';
 echo '<th><input type="text" placeholder="City" name="city" required></th>';
 echo '<th><input type="text" placeholder="Suburb" name="suburb" required></th>';
 echo '<th><input type="text" placeholder="Country" name="country" required></th>';

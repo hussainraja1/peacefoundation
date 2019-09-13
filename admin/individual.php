@@ -54,6 +54,20 @@ $query =  "
 else{
 echo '<script>alert("Please enter the something in the fields");</script>';	
 }
+}
+//If Remove Button is set, remove the associated contents of the nonmember, account and address tables
+else if(isset($_POST['remove'])){
+
+$accID = $_POST['accID'];	
+
+	$query ="DELETE nonmember, address, accounts FROM nonmember 
+LEFT join address on nonmember.id = address.id
+LEFT join accounts on nonmember.id = accounts.id
+where nonmember.id = $accID;";
+
+
+    $search_result = filterTable($query);
+
 }		
 }
 
@@ -64,7 +78,7 @@ if(isset($_POST['search']) && isset($_POST['searchIN']))
 	
     // search in all table columns
     // using concat mysql function
-    $query = "SELECT nonmember.NonMemberID,nonmember.Title,nonmember.FirstName,nonmember.LastName,nonmember.PhoneNum,nonmember.DOB,nonmember.Comments,address.Address,address.City,address.Suburb,address.Country
+    $query = "SELECT nonmember.NonMemberID,nonmember.id,nonmember.Title,nonmember.FirstName,nonmember.LastName,nonmember.PhoneNum,nonmember.DOB,nonmember.Comments,address.Address,address.City,address.Suburb,address.Country
 FROM address ,nonmember
 WHERE  address.id =nonmember.id AND $searchColumn LIKE '%".$valueToSearch."%'";
 
@@ -72,10 +86,55 @@ WHERE  address.id =nonmember.id AND $searchColumn LIKE '%".$valueToSearch."%'";
     
 }
  else {
-    $query = "SELECT nonmember.NonMemberID,nonmember.Title,nonmember.FirstName,nonmember.LastName,nonmember.PhoneNum,nonmember.DOB,nonmember.Comments,address.Address,address.City,address.Suburb,address.Country
+    $query = "SELECT nonmember.NonMemberID,nonmember.id,nonmember.Title,nonmember.FirstName,nonmember.LastName,nonmember.PhoneNum,nonmember.DOB,nonmember.Comments,address.Address,address.City,address.Suburb,address.Country
 FROM address ,nonmember
 WHERE  address.id =nonmember.id";
     $search_result = filterTable($query);
+}
+
+if(isset($_POST['submitButtonIndividual'])){
+	include('../db.php');
+
+$username = mysqli_real_escape_string($con, $_REQUEST['username']);
+$password = mysqli_real_escape_string($con, $_REQUEST['password']);
+$email = mysqli_real_escape_string($con, $_REQUEST['email']);
+$membertype = "individual";
+
+$title = mysqli_real_escape_string($con, $_REQUEST['title']);
+$firstname = mysqli_real_escape_string($con, $_REQUEST['firstname']);
+$lastname = mysqli_real_escape_string($con, $_REQUEST['lastname']);
+$dob = mysqli_real_escape_string($con, $_REQUEST['dob']);
+$phonenum = mysqli_real_escape_string($con, $_REQUEST['phonenumber']);
+$comments = mysqli_real_escape_string($con, $_REQUEST['comments']);
+
+$address = mysqli_real_escape_string($con, $_REQUEST['address']);
+$city = mysqli_real_escape_string($con, $_REQUEST['city']);
+$suburb = mysqli_real_escape_string($con, $_REQUEST['suburb']);
+$country = mysqli_real_escape_string($con, $_REQUEST['country']);
+
+ 
+// Attempt insert query execution
+$sql = "INSERT INTO accounts (id, Username, Password,Email,membertype) VALUES (Null, '$username','$password', '$email','$membertype')";
+if(mysqli_query($con, $sql)){
+$user_id = mysqli_insert_id($con);
+$sql_information = "INSERT INTO nonmember (NonMemberID, id, Title,FirstName,LastName,PhoneNum,DOB,Comments) VALUES (Null, '$user_id','$title', '$firstname','$lastname','$phonenum','$dob', '$comments')";
+$sql_address = "INSERT INTO address (AddressID, id, Address,City,Suburb,Country) VALUES (Null, '$user_id','$address', '$city','$suburb','$country')";
+
+	if(mysqli_query($con, $sql_information) && mysqli_query($con, $sql_address) ){
+	header("refresh:1"); 
+	echo '<script>alert("Record added successfully");</script>';	
+	}
+	else{
+	echo '<script>alert("Record cannot be added");</script>';	
+	}
+	
+} else{
+		echo '<script>alert("Record cannot be added");</script>';
+
+}
+ 
+// Close connection
+mysqli_close($con);
 }
 
 // function to connect and execute the query
@@ -269,6 +328,7 @@ overflow-y:scroll;
      <?php          echo "<table width='100%'>
 <tr>
 <th>NonMemberID</th>
+<th>Account ID</th>
 <th>Title</th>
 <th>First name</th>
 <th>Last name</th>
@@ -285,6 +345,7 @@ while($row = mysqli_fetch_array($search_result)) {
 	
     echo "<tr><form action=individual.php method=post>";
 	echo "<td><input readonly type=text name=Nid value='".$row['NonMemberID']. "'</td>";
+	echo "<td><input readonly type=text name=accID value='".$row['id']. "'</td>";
     echo "<td><input type=text name=title value='".$row['Title'] . "'</td>";
     echo "<td><input type=text name=firstname value='".$row['FirstName'] . "'</td>";
     echo "<td><input type=text name=lastname value='".$row['LastName'] . "'</td>";
@@ -295,7 +356,9 @@ while($row = mysqli_fetch_array($search_result)) {
 	echo "<td><input type=text name=suburb value='".$row['Suburb'] . "'</td>";
     echo "<td><input type=text name=city value='".$row['City'] . "'</td>";
     echo "<td><input type=text name=country value='".$row['Country'] . "'</td>";
-	echo "<td><input type=submit name='sub'>";
+	echo "<td><input type=submit name='sub'></td>";
+	echo "<td><input type=submit name='remove' value='Remove'></td>";
+
 	echo "</form></tr>";
 
 
@@ -308,6 +371,7 @@ while($row = mysqli_fetch_array($search_result)) {
 	
 	echo "<tr>";
 	echo "<td>".$row['NonMemberID']. "</td>";
+	echo "<td>".$row['id']. "</td>";
     echo "<td>".$row['Title'] . "</td>";
     echo "<td>".$row['FirstName'] . "</td>";
     echo "<td>".$row['LastName'] . "</td>";
@@ -336,7 +400,7 @@ echo "</table>";
 	
 echo '<div class ="tablecontent" style="display: none" id="individual"><b>Please fill in the member information and click Create button</b><br>';
 
-echo '<form method="post" action="edituser.php">';
+echo '<form method="post" action="individual.php">';
 echo "<table width='100%'>";
 echo '<tr>';
 echo '<th><input type="text" placeholder="Enter Username" name="username" required></th>';
