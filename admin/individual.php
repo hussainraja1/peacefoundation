@@ -98,7 +98,7 @@ if(isset($_POST['submitButtonIndividual'])){
 $username = mysqli_real_escape_string($con, $_REQUEST['username']);
 $password = mysqli_real_escape_string($con, $_REQUEST['password']);
 $email = mysqli_real_escape_string($con, $_REQUEST['email']);
-$membertype = "individual";
+$membertype = mysqli_real_escape_string($con, $_REQUEST['membertype']);
 
 $title = mysqli_real_escape_string($con, $_REQUEST['title']);
 $firstname = mysqli_real_escape_string($con, $_REQUEST['firstname']);
@@ -296,7 +296,7 @@ overflow-y:scroll;
         <div class="container-fluid" id="tableview">
 			<?php
 			if($_SESSION['membertype'] == "admin"){
-			echo "<button id='individualB'>Add New Member</button> <b><-- Click to add a new member</b><br><br>";
+			echo "<button id='individualB'>Add New Member</button> <b><-- Click to add a new member, admin or volunteer</b><br><br>";
 			}
 			?>
 
@@ -416,7 +416,10 @@ echo '<th><input type="text" placeholder="Enter Address" name="address" required
 echo '<th><input type="text" placeholder="Enter City" name="city" required></th>';
 echo '<th><input type="text" placeholder="Enter Suburb" name="suburb" required></th>';
 echo '<th><input type="text" placeholder="Enter Country" name="country" required></th>';
-echo '<td><b><input type="submit" value ="Create" name="submitButtonIndividual"></b></th>';
+echo '<th>Make Individual<input type="radio"  name="membertype" value="individual" required></th>';
+echo '<th>Make Admin<input type="radio"  name="membertype" value="admin" required></th>';
+echo '<th>Make Volunteer<input type="radio"  name="membertype" value="volunteer" required></th>';
+echo '<td><b><input type="submit" class="radio" value ="Create" name="submitButtonIndividual"></b></th>';
 echo '</tr>';
 echo '</table>';
 echo '</form>';
