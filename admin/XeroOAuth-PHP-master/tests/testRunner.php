@@ -6,59 +6,15 @@ function testLinks()
     if (isset($_SESSION['access_token']) || XRO_APP_TYPE == 'Private')
         echo '<p><br/><Strong>Accounting API</Strong>
                 <ul>
-                <li><a href="?organisation=1">Organisation</a></li>
-                <li><a href="?organisation=1&request=json">Organisation (JSON response)</a></li>
-                <li><a href="?accounts=1">Accounts GET</a></li>
-                <li><a href="?accountsfilter=1">Accounts GET - Where Type is BANK</a></li>
-                <li><a href="?banktransactions=1">BankTransactions GET</a></li>
-                <li><a href="?banktransactions=1&method=put">BankTransactions PUT</a></li>
-                <li><a href="?contacts=1">Contacts GET</a></li>
-                <li><a href="?contacts=1&method=post">Contacts POST</a></li>
-                <li><a href="?contacts=1&method=put">Contacts PUT</a></li>
-                <li><a href="?payments=1">Payments GET</a></li>
-                <li><a href="?payments=1&method=post">Payments POST (Delete payment)</a></li>
                 <li><a href="?invoice=1">Invoices GET (with order by Total example)</a></li>
-                <li><a href="?invoicesfilter=1">Invoices GET - Where Contact Name contains "Martin"</a></li>
-                <li><a href="?invoicesmodified=1">Invoices GET - If-Modified-Since</a></li>
-                <li><a href="?invoice=1&method=put">Invoices PUT</a></li>
-                <li><a href="?invoice=1&method=4dp">Invoices PUT (4 decimal places)</a></li>
-                <li><a href="?invoice=1&method=post">Invoices POST</a></li>
-                <li><a href="?invoice=attachment&method=put">Invoice attachment PUT</a></li>
                 <li><a href="?invoice=pdf">Invoice PDF</a></li>
-                <li><a href="?items=1">Items GET</a></li>
-                <li><a href="?items=1&method=put">Items PUT</a></li>
-                <li><a href="?trialbalance=1">Trial Balance</a></li>
-                <li><a href="?trackingcategories=1">Tracking Categories - GET</a></li>
-                <li><a href="?trackingcategories=1&method=getarchived">Tracking Categories - GET (+ archived)</a></li>
-                <li><a href="?trackingcategories=1&method=put">Tracking Categories - PUT</a></li>
-                <li><a href="?trackingcategories=1&method=archive">Tracking Categories - ARCHIVE</a></li>
-                <li><a href="?trackingcategories=1&method=restore">Tracking Categories - restore to active</a></li>
-                </ul>
-
-                <br/><Strong>Payroll API</Strong>
-                <ul>
-                <li><a href="?payrollemployees=1">Payroll Employees GET</a></li>
-                <li><a href="?payruns=1">Payroll Payruns GET</a></li>
-                <li><a href="?payrollsuperfunds=1">Payroll Superfunds GET</a></li>
-                <li><a href="?timesheets=1">Timesheets POST</a></li>
-                </ul>
-
-                <br/><Strong>File API</Strong>
-                <ul>
-                <li><a href="?=1">Home</a></li>
-                <li><a href="?folders=1">Folders GET</a></li>
-                <li><a href="?folders=1&method=files">Folder/Files GET</a></li>
-                </ul>
-
-                <br/><Strong>Connection Admin</Strong>
                 <ul>';
 
         if (XRO_APP_TYPE == 'Partner')   echo '<li><a href="?refresh=1">Refresh access token</a></li>';
         if (XRO_APP_TYPE !== 'Private' && isset($_SESSION['access_token'])) {
             echo '<li><a href="?wipe=1">Start Over and delete stored tokens</a></li>';
         } elseif(XRO_APP_TYPE !== 'Private') {
-            echo '<li><a href="?authenticate=1">Authenticate</a></li>';
-            echo '<li><a href="?authenticate=2">Authenticate with Payroll API support (Australia & US organisations only)</a></li>';
+            echo 'error';
         }
 
 
