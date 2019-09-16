@@ -4,11 +4,11 @@ require 'lib/XeroOAuth.php';
 define ( 'BASE_PATH', dirname(__FILE__) );
 define ( "XRO_APP_TYPE", "Private" );
 define ( "OAUTH_CALLBACK", "oob" );
-$useragent = "XeroOAuth-PHP Private App Test";
+$useragent = "My Application";
 
 $signatures = array (
-		'consumer_key' => 'D5PRN5NTS5TTFJPORENJ20KLHE5UL0',
-		'shared_secret' => 'FQYIDWRJRFTFTALVBS44EBJSKCZKWD',
+		'consumer_key' => '0YIFW9EHDDOWKNFEOI1PIZPILHSKAF',
+		'shared_secret' => 'GAPJBLN7HFVRFEOYGXQYFSSABCNG5B',
 		// API versions
 		'core_version' => '2.0',
 		'payroll_version' => '1.0',
