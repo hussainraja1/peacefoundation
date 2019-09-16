@@ -93,8 +93,8 @@ else if ($_SESSION['membertype'] != "admin"){
           <a class="dropdown-item" href="resetp.php">User Password Reset</a>
           <div class="dropdown-divider"></div>
           <h6 class="dropdown-header">Admin Settings:</h6>
-          <a class="dropdown-item" href="createadmin.php">Create Admin</a>
-          <a class="dropdown-item" href="removeadmin.php">Remove Admin</a>
+          <a class="dropdown-item" href="xeroapi/private.php">Display Invoices - Xero</a>
+
         </div>
       </li>
       <li class="nav-item active">
