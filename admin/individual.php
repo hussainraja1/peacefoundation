@@ -26,12 +26,13 @@ $lastname = trim($_POST['lastname']);
 $phonenum = trim($_POST['phonenum']);
 $dob = trim($_POST['dob']);
 $comments = trim($_POST['comments']);
+$membershipstatus = trim($_POST['membershipstatus']);
 $address = trim($_POST['address']);
 $suburb = trim($_POST['suburb']);
 $city = trim($_POST['city']);
 $country = trim($_POST['country']);
 
-if(!empty($title)&&!empty($firstname)&&!empty($lastname)&&!empty($phonenum)&&!empty($dob)&&!empty($comments)&&!empty($address)&&!empty($suburb)&&!empty($city)&&!empty($country) ){
+if(!empty($title)&&!empty($firstname)&&!empty($lastname)&&!empty($phonenum)&&!empty($dob)&&!empty($comments)&&!empty($address)&&!empty($suburb)&&!empty($city)&&!empty($country)&&!empty($membershipstatus)){
 	
 $query =  "
 
@@ -41,6 +42,7 @@ $query =  "
 	nonmember.phonenum='$phonenum',
 	nonmember.dob='$dob',
 	nonmember.comments='$comments',
+	nonmember.membershipstatus ='$membershipstatus',
 	address.address='$address',
 	address.suburb='$suburb',
 	address.city='$city',
@@ -78,7 +80,7 @@ if(isset($_POST['search']) && isset($_POST['searchIN']))
 	
     // search in all table columns
     // using concat mysql function
-    $query = "SELECT nonmember.NonMemberID,nonmember.id,nonmember.Title,nonmember.FirstName,nonmember.LastName,nonmember.PhoneNum,nonmember.DOB,nonmember.Comments,address.Address,address.City,address.Suburb,address.Country
+    $query = "SELECT nonmember.NonMemberID,nonmember.id,nonmember.Title,nonmember.FirstName,nonmember.LastName,nonmember.PhoneNum,nonmember.DOB,nonmember.Comments,nonmember.MembershipStatus,address.Address,address.City,address.Suburb,address.Country
 FROM address ,nonmember
 WHERE  address.id =nonmember.id AND $searchColumn LIKE '%".$valueToSearch."%'";
 
@@ -86,7 +88,7 @@ WHERE  address.id =nonmember.id AND $searchColumn LIKE '%".$valueToSearch."%'";
     
 }
  else {
-    $query = "SELECT nonmember.NonMemberID,nonmember.id,nonmember.Title,nonmember.FirstName,nonmember.LastName,nonmember.PhoneNum,nonmember.DOB,nonmember.Comments,address.Address,address.City,address.Suburb,address.Country
+    $query = "SELECT nonmember.NonMemberID,nonmember.id,nonmember.Title,nonmember.FirstName,nonmember.LastName,nonmember.PhoneNum,nonmember.DOB,nonmember.Comments,nonmember.MembershipStatus,address.Address,address.City,address.Suburb,address.Country
 FROM address ,nonmember
 WHERE  address.id =nonmember.id";
     $search_result = filterTable($query);
@@ -106,6 +108,7 @@ $lastname = mysqli_real_escape_string($con, $_REQUEST['lastname']);
 $dob = mysqli_real_escape_string($con, $_REQUEST['dob']);
 $phonenum = mysqli_real_escape_string($con, $_REQUEST['phonenumber']);
 $comments = mysqli_real_escape_string($con, $_REQUEST['comments']);
+$membershipstatus = mysqli_real_escape_string($con, $_REQUEST['membershipstatus']);
 
 $address = mysqli_real_escape_string($con, $_REQUEST['address']);
 $city = mysqli_real_escape_string($con, $_REQUEST['city']);
@@ -117,7 +120,7 @@ $country = mysqli_real_escape_string($con, $_REQUEST['country']);
 $sql = "INSERT INTO accounts (id, Username, Password,Email,membertype) VALUES (Null, '$username','$password', '$email','$membertype')";
 if(mysqli_query($con, $sql)){
 $user_id = mysqli_insert_id($con);
-$sql_information = "INSERT INTO nonmember (NonMemberID, id, Title,FirstName,LastName,PhoneNum,DOB,Comments) VALUES (Null, '$user_id','$title', '$firstname','$lastname','$phonenum','$dob', '$comments')";
+$sql_information = "INSERT INTO nonmember (NonMemberID, id, Title,FirstName,LastName,PhoneNum,DOB,Comments,MembershipStatus) VALUES (Null, '$user_id','$title', '$firstname','$lastname','$phonenum','$dob', '$comments','$membershipstatus')";
 $sql_address = "INSERT INTO address (AddressID, id, Address,City,Suburb,Country) VALUES (Null, '$user_id','$address', '$city','$suburb','$country')";
 
 	if(mysqli_query($con, $sql_information) && mysqli_query($con, $sql_address) ){
@@ -311,6 +314,7 @@ overflow-y:scroll;
   <option  value="nonmember.PhoneNum">Phone Number</option>
   <option  value="nonmember.DOB"> Date of Birth </option>
   <option  value="nonmember.Comments"> Comments</option>
+  <option  value="nonmember.MembershipStatus"> MembershipStatus</option>  
   <option  value="address.Address"> Address</option>
   <option  value="address.City"> City</option>
   <option  value="address.Suburb"> Suburb</option>
@@ -335,6 +339,7 @@ overflow-y:scroll;
 <th>Phone Number</th>
 <th>Date of Birth</th>
 <th>Comments</th>
+<th>Membership Status</th>
 <th>Address</th>
 <th>Suburb</th>
 <th>City</th>
@@ -352,6 +357,7 @@ while($row = mysqli_fetch_array($search_result)) {
     echo "<td><input type=text name=phonenum value='".$row['PhoneNum'] . "'</td>";
     echo "<td><input type=text name=dob value='".$row['DOB'] . "'</td>";
     echo "<td><input type=text name=comments value='".$row['Comments'] . "'</td>";
+    echo "<td><input type=text name=membershipstatus value='".$row['MembershipStatus'] . "'</td>";	
     echo "<td><input type=text name=address value='".$row['Address'] . "'</td>";
 	echo "<td><input type=text name=suburb value='".$row['Suburb'] . "'</td>";
     echo "<td><input type=text name=city value='".$row['City'] . "'</td>";
@@ -378,6 +384,7 @@ while($row = mysqli_fetch_array($search_result)) {
     echo "<td>".$row['PhoneNum'] . "</td>";
     echo "<td>".$row['DOB'] . "</td>";
     echo "<td>".$row['Comments'] . "</td>";
+    echo "<td>".$row['MembershipStatus'] . "</td>";	
     echo "<td>".$row['Address'] . "</td>";
 	echo "<td>".$row['Suburb'] . "</td>";
     echo "<td>".$row['City'] ."</td>";
@@ -412,6 +419,7 @@ echo '<th><input type="text" placeholder="Enter Last Name" name="lastname" requi
 echo '<th><input type="text" placeholder="Enter Phone Number" name="phonenumber" required></th>';
 echo '<th><input type="date" placeholder="Enter Date of Birth" name="dob" required></th>';
 echo '<th><input type="text" placeholder="Enter Comments" name="comments" required></th>';
+echo '<th><input type="text" placeholder="Enter Membership Status" name="membershipstatus" required></th>';
 echo '<th><input type="text" placeholder="Enter Address" name="address" required></th>';
 echo '<th><input type="text" placeholder="Enter City" name="city" required></th>';
 echo '<th><input type="text" placeholder="Enter Suburb" name="suburb" required></th>';

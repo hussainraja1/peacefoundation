@@ -214,7 +214,9 @@ if ( isset($_REQUEST['wipe'])) {
                 if ($_REQUEST['invoice']=="pdf") {
                     $response = $XeroOAuth->request('GET', $XeroOAuth->url('Invoice/'.$invoices->Invoices[0]->Invoice->InvoiceID, 'core'), array(), "", 'pdf');
                     if ($XeroOAuth->response['code'] == 200) {
-                        $myFile = $invoices->Invoices[0]->Invoice->InvoiceID.".pdf";
+						//File PDF download location
+						$fileLocation = "../../../../../Users/Hussain/Desktop/Invoices/";
+                        $myFile = $fileLocation.$invoices->Invoices[0]->Invoice->InvoiceNumber.".pdf";
                         $fh = fopen($myFile, 'w') or die("can't open file");
                         fwrite($fh, $XeroOAuth->response['response']);
                         fclose($fh);
