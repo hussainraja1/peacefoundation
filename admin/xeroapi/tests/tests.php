@@ -113,7 +113,7 @@ overflow-y:scroll;
         </div>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="charts.php">
+        <a class="nav-link" href="../charts.php">
           <i class="fas fa-fw fa-chart-area"></i>
           <span>Charts</span></a>
       </li>
@@ -164,6 +164,7 @@ if ( isset($_REQUEST['wipe'])) {
 			   		echo'<div class ="tablecontent" id= "tableview">';
 			echo "<table width='100%'>
 			<tr>
+			<th>Send Email</th>
 			<th>name</th>
 			<th>date</th>
 			<th>duedate</th>
@@ -192,8 +193,11 @@ if ( isset($_REQUEST['wipe'])) {
 			$AmountPaid = $invoices->Invoices[0]->Invoice[$x]->AmountPaid;
 			$AmountCredited = $invoices->Invoices[0]->Invoice[$x]->AmountCredited;
 
-			
+			echo "<form id='sendingemail' action='?invoice=pdf' method='POST'>";
+
+
 			echo"<tr>";
+			echo "<td> <input type='checkbox' value=$x name='checkbox[]'></td>";
 			echo "<td>".$name."</td>";
 			echo "<td>".$date."</td>";
 			echo "<td>".$duedate."</td>";
@@ -209,18 +213,36 @@ if ( isset($_REQUEST['wipe'])) {
 	    echo "</tr>";
 			$count++;
 				}
- echo "</table></div>";
+						
+
+ echo "</table><br><input type='submit' value='Download'></form></div>";
 
                 if ($_REQUEST['invoice']=="pdf") {
                     $response = $XeroOAuth->request('GET', $XeroOAuth->url('Invoice/'.$invoices->Invoices[0]->Invoice->InvoiceID, 'core'), array(), "", 'pdf');
-                    if ($XeroOAuth->response['code'] == 200) {
-						//File PDF download location
-						$fileLocation = "../../../../../Users/Hussain/Desktop/Invoices/";
-                        $myFile = $fileLocation.$invoices->Invoices[0]->Invoice->InvoiceNumber.".pdf";
-                        $fh = fopen($myFile, 'w') or die("can't open file");
-                        fwrite($fh, $XeroOAuth->response['response']);
-                        fclose($fh);
-                        echo "PDF copy downloaded, check your the directory of this script.</br>";
+				
+					if ($XeroOAuth->response['code'] == 200) {
+					$invoiceNumber =  count($invoices->Invoices[0]);
+			$counting = 0;
+			$objectNo=0;
+			if(!empty($_POST['checkbox'])){
+				//Count the check boxes with their values
+				foreach($_POST['checkbox'] as $objectNo) {
+			          
+					  $newON = (int)$objectNo;
+					   //File PDF download location EDIT ACCORDING TO THE USER
+					   $fileLocation = "../../../../../Users/Hussain/Desktop/Invoices/";
+                       $myFile = $fileLocation.$invoices->Invoices[0]->Invoice[$newON]->InvoiceNumber.".pdf";
+                       $fh = fopen($myFile, 'w') or die("can't open file");
+                       fwrite($fh, $XeroOAuth->response['response']);
+					   fclose($fh);
+
+						$counting++;
+				}
+				 echo "<br>",$counting, " number of PDF downloaded...</br>";
+			}
+			else{
+				echo "Please check the boxes and submit it..";
+			}
                     } else {
                         outputError($XeroOAuth);
                     }
