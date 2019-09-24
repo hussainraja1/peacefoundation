@@ -480,42 +480,160 @@ echo "</table>";
 	  	  	<?php
 		
 	if($_SESSION['membertype'] == "admin"){
-
-echo '<div class ="tablecontent" style="display: none" id="school"><b>Please fill in the member information and click Create button</b><br>';
-echo '<form method="post" action="school.php">';
-echo '<table width="100%">';
-echo '<tr>';
-echo '<th><input type="text" placeholder="Enter Username" name="username" required></th>';
-echo '<th><input type="text" placeholder="Enter Password" name="password" required></th>';
-echo '<th><input type="text" placeholder="Enter Email" name="email" required></th>';
-echo '<th><input type="text" placeholder="School Name" name="schoolname" required></th>';
-echo '<th><input type="text" placeholder="Trained By" name="trainedby" required></th>';
-echo '<th><input type="text" placeholder="Annotations" name="annotations" required></th>';
-echo '<th><input type="text" placeholder="School Type" name="schooltype" required></th>';
-echo '<th><input type="text" placeholder="Partnership ID" name="partnershipID" required></th>';
-echo '<th><input type="text" placeholder="decilerating" name="decilerating" required></th>';
-echo '<th><input type="text" placeholder="Maori Percentage" name="maoripercentage" required></th>';
-echo '<th><input type="date" placeholder="Full Training" name="fulltraining" required></th>';
-echo '<th><input type="date" placeholder="Revisit Training" name="revisittraining" required></th>';
-echo '<th><input type="text" placeholder="Primary Contact" name="primarycontact" required></th>';
-echo '<th><input type="text" placeholder="Principal" name="principal" required></th>';
-echo '<th><input type="text" placeholder="Principal Email" name="principalemail" required></th>';
-echo '<th><input type="text" placeholder="Phone Number" name="phonenumber" required></th>';
-echo '<th><input type="text" placeholder="Interest" name="interest" required></th>';
-echo '<th><input type="date" placeholder="Email Sent" name="emailsent" required></th>';
-echo '<th><input type="date" placeholder="Reply Date" name="replydate" required></th>';
-echo '<th><input type="text" placeholder="Training Booked" name="trainingbooked" required></th>';
-echo '<th><input type="text" placeholder="Address" name="street" required></th>';
-echo '<th><input type="text" placeholder="City" name="city" required></th>';
-echo '<th><input type="text" placeholder="Suburb" name="suburb" required></th>';
-echo '<th><input type="text" placeholder="Country" name="country" required></th>';
-echo '<td><input type="submit" value ="Create" name="submitButtonSchool"></th>';
-echo '</tr>';
-echo '</table>';
-echo '</form>';
-echo '<br><button id="viewT"><b>View Tables</b></button><br><br>';
-
-echo '</div>';
+		
+echo '<div class ="contents" style="display: none" id="school"><b>Please fill in the member information and click Create button</b><br>';
+echo ' <form method="post" action="school.php">
+<div class="form-group row">
+    <label for="username" class="col-4 col-form-label">Username</label> 
+    <div class="col-8">
+      <input id="username" name="username" placeholder="Username" type="text" class="form-control">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="password" class="col-4 col-form-label">Password</label> 
+    <div class="col-8">
+      <input id="password" name="password" placeholder="Enter Password" type="text" class="form-control">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="email" class="col-4 col-form-label">Email</label> 
+    <div class="col-8">
+      <input id="email" name="email" placeholder="Enter Email" type="text" class="form-control">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="schoolname" class="col-4 col-form-label">School Name</label> 
+    <div class="col-8">
+      <input id="title" name="schoolname" placeholder="School Name" type="text" class="form-control">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="trainedby" class="col-4 col-form-label">Trained By</label> 
+    <div class="col-8">
+      <input id="trainedby" name="trainedby" placeholder="Enter Trainedby" type="text" class="form-control">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="annotations" class="col-4 col-form-label">Annotations</label> 
+    <div class="col-8">
+      <input id="annotations" name="annotations" placeholder="Enter Annotations" type="text" class="form-control">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="schooltype" class="col-4 col-form-label">School Type</label> 
+    <div class="col-8">
+      <input id="schooltype" name="schooltype" placeholder="Enter School Type" type="text" class="form-control">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="partnershipID" class="col-4 col-form-label">Partnership ID</label> 
+    <div class="col-8">
+      <input id="partnershipID" name="partnershipID" placeholder="Enter Partnership ID" type="text" class="form-control">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="decilerating" class="col-4 col-form-label">Decilerating</label> 
+    <div class="col-8">
+      <input id="decilerating" name="decilerating" placeholder="Enter DecileRating" type="text" class="form-control">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="maoripercentage" class="col-4 col-form-label">Maori Percentage</label> 
+    <div class="col-8">
+      <input id="maoripercentage" name="maoripercentage" placeholder="Enter MaoriPercentage" type="text" class="form-control">
+    </div>
+  </div>
+    <div class="form-group row">
+    <label for="fulltraining" class="col-4 col-form-label">Full Training</label> 
+    <div class="col-8">
+      <input id="fulltraining" name="fulltraining" type="date" class="form-control">
+    </div>
+  </div>
+    <div class="form-group row">
+    <label for="revisittraining" class="col-4 col-form-label">Revisit Training</label> 
+    <div class="col-8">
+      <input id="revisittraining" name="revisittraining" type="date" class="form-control">
+    </div>
+  </div>
+    <div class="form-group row">
+    <label for="primarycontact" class="col-4 col-form-label">Primary Contact</label> 
+    <div class="col-8">
+      <input id="primarycontact" name="primarycontact" placeholder="Enter Primary Contact" type="text" class="form-control">
+    </div>
+  </div>
+    <div class="form-group row">
+    <label for="principal" class="col-4 col-form-label">Principal</label> 
+    <div class="col-8">
+      <input id="principal" name="principal" placeholder="Enter Principal" type="text" class="form-control">
+    </div>
+  </div>
+    <div class="form-group row">
+    <label for="principalemail" class="col-4 col-form-label">Principal Email</label> 
+    <div class="col-8">
+      <input id="principalemail" name="principalemail" placeholder="Enter Principal Email" type="text" class="form-control">
+    </div>
+  </div>
+    <div class="form-group row">
+    <label for="phonenumber" class="col-4 col-form-label">Phone Number</label> 
+    <div class="col-8">
+      <input id="phonenumber" name="phonenumber" placeholder="Enter Phone Number" type="text" class="form-control">
+    </div>
+  </div>
+    <div class="form-group row">
+    <label for="interest" class="col-4 col-form-label">Interest</label> 
+    <div class="col-8">
+      <input id="interest" name="interest" placeholder="Enter Interest" type="text" class="form-control">
+    </div>
+  </div>
+    <div class="form-group row">
+    <label for="emailsent" class="col-4 col-form-label">Email Sent</label> 
+    <div class="col-8">
+      <input id="emailsent" name="emailsent" type="date" class="form-control">
+    </div>
+  </div>
+    <div class="form-group row">
+    <label for="replydate" class="col-4 col-form-label">Reply Date</label> 
+    <div class="col-8">
+      <input id="replydate" name="replydate"  type="date" class="form-control">
+    </div>
+  </div>
+    <div class="form-group row">
+    <label for="trainingbooked" class="col-4 col-form-label">Training Booked</label> 
+    <div class="col-8">
+      <input id="trainingbooked" name="trainingbooked" placeholder="Enter Training Booked" type="text" class="form-control">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="street" class="col-4 col-form-label">Address</label> 
+    <div class="col-8">
+      <input id="street" name="street" placeholder="Enter Address" type="text" class="form-control">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="suburb" class="col-4 col-form-label">Suburb</label> 
+    <div class="col-8">
+      <input id="suburb" name="suburb" placeholder="Enter Suburb" type="text" class="form-control">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="city" class="col-4 col-form-label">City</label> 
+    <div class="col-8">
+      <input id="city" name="city" placeholder="Enter City" type="text" class="form-control">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="country" class="col-4 col-form-label">Country</label> 
+    <div class="col-8">
+      <input id="country" name="country" placeholder="Enter Country" type="text" class="form-control">
+    </div>
+  </div> 
+    <div class="form-group row">
+    <div class="col-8">
+<b><input type="submit" class="radio" value ="Create" name="submitButtonSchool"></b><br>
+<br><button id="viewT"><b>View Tables</b></button><br><br>
+    </div>
+  </div> </form></div>
+  ';
 
 	}
 ?>

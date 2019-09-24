@@ -26,13 +26,13 @@ $lastname = trim($_POST['lastname']);
 $phonenum = trim($_POST['phonenum']);
 $dob = trim($_POST['dob']);
 $comments = trim($_POST['comments']);
-$membershipstatus = trim($_POST['membershipstatus']);
+$status = trim($_POST['status']);
 $address = trim($_POST['address']);
 $suburb = trim($_POST['suburb']);
 $city = trim($_POST['city']);
 $country = trim($_POST['country']);
 
-if(!empty($title)&&!empty($firstname)&&!empty($lastname)&&!empty($phonenum)&&!empty($dob)&&!empty($comments)&&!empty($address)&&!empty($suburb)&&!empty($city)&&!empty($country)&&!empty($membershipstatus)){
+if(!empty($title)&&!empty($firstname)&&!empty($lastname)&&!empty($phonenum)&&!empty($dob)&&!empty($comments)&&!empty($status)&&!empty($address)&&!empty($suburb)&&!empty($city)&&!empty($country)){
 	
 $query =  "
 
@@ -42,7 +42,7 @@ $query =  "
 	nonmember.phonenum='$phonenum',
 	nonmember.dob='$dob',
 	nonmember.comments='$comments',
-	nonmember.membershipstatus ='$membershipstatus',
+	nonmember.status ='$status',
 	address.address='$address',
 	address.suburb='$suburb',
 	address.city='$city',
@@ -80,7 +80,7 @@ if(isset($_POST['search']) && isset($_POST['searchIN']))
 	
     // search in all table columns
     // using concat mysql function
-    $query = "SELECT nonmember.NonMemberID,nonmember.id,nonmember.Title,nonmember.FirstName,nonmember.LastName,nonmember.PhoneNum,nonmember.DOB,nonmember.Comments,nonmember.MembershipStatus,address.Address,address.City,address.Suburb,address.Country
+    $query = "SELECT nonmember.NonMemberID,nonmember.id,nonmember.Title,nonmember.FirstName,nonmember.LastName,nonmember.PhoneNum,nonmember.DOB,nonmember.Comments,nonmember.status,address.Address,address.City,address.Suburb,address.Country
 FROM address ,nonmember
 WHERE  address.id =nonmember.id AND $searchColumn LIKE '%".$valueToSearch."%'";
 
@@ -88,7 +88,7 @@ WHERE  address.id =nonmember.id AND $searchColumn LIKE '%".$valueToSearch."%'";
     
 }
  else {
-    $query = "SELECT nonmember.NonMemberID,nonmember.id,nonmember.Title,nonmember.FirstName,nonmember.LastName,nonmember.PhoneNum,nonmember.DOB,nonmember.Comments,nonmember.MembershipStatus,address.Address,address.City,address.Suburb,address.Country
+    $query = "SELECT nonmember.NonMemberID,nonmember.id,nonmember.Title,nonmember.FirstName,nonmember.LastName,nonmember.PhoneNum,nonmember.DOB,nonmember.Comments,nonmember.status,address.Address,address.City,address.Suburb,address.Country
 FROM address ,nonmember
 WHERE  address.id =nonmember.id";
     $search_result = filterTable($query);
@@ -108,7 +108,7 @@ $lastname = mysqli_real_escape_string($con, $_REQUEST['lastname']);
 $dob = mysqli_real_escape_string($con, $_REQUEST['dob']);
 $phonenum = mysqli_real_escape_string($con, $_REQUEST['phonenumber']);
 $comments = mysqli_real_escape_string($con, $_REQUEST['comments']);
-$membershipstatus = mysqli_real_escape_string($con, $_REQUEST['membershipstatus']);
+$status = mysqli_real_escape_string($con, $_REQUEST['status']);
 
 $address = mysqli_real_escape_string($con, $_REQUEST['address']);
 $city = mysqli_real_escape_string($con, $_REQUEST['city']);
@@ -120,7 +120,7 @@ $country = mysqli_real_escape_string($con, $_REQUEST['country']);
 $sql = "INSERT INTO accounts (id, Username, Password,Email,membertype) VALUES (Null, '$username','$password', '$email','$membertype')";
 if(mysqli_query($con, $sql)){
 $user_id = mysqli_insert_id($con);
-$sql_information = "INSERT INTO nonmember (NonMemberID, id, Title,FirstName,LastName,PhoneNum,DOB,Comments,MembershipStatus) VALUES (Null, '$user_id','$title', '$firstname','$lastname','$phonenum','$dob', '$comments','$membershipstatus')";
+$sql_information = "INSERT INTO nonmember (NonMemberID, id, Title,FirstName,LastName,PhoneNum,DOB,Comments,status) VALUES (Null, '$user_id','$title', '$firstname','$lastname','$phonenum','$dob', '$comments','$status')";
 $sql_address = "INSERT INTO address (AddressID, id, Address,City,Suburb,Country) VALUES (Null, '$user_id','$address', '$city','$suburb','$country')";
 
 	if(mysqli_query($con, $sql_information) && mysqli_query($con, $sql_address) ){
@@ -315,7 +315,7 @@ overflow-y:scroll;
   <option  value="nonmember.PhoneNum">Phone Number</option>
   <option  value="nonmember.DOB"> Date of Birth </option>
   <option  value="nonmember.Comments"> Comments</option>
-  <option  value="nonmember.MembershipStatus"> MembershipStatus</option>  
+  <option  value="nonmember.status"> Status</option>  
   <option  value="address.Address"> Address</option>
   <option  value="address.City"> City</option>
   <option  value="address.Suburb"> Suburb</option>
@@ -361,7 +361,7 @@ while($row = mysqli_fetch_array($search_result)) {
     echo "<td><input type=text name=phonenum value='".$row['PhoneNum'] . "'</td>";
     echo "<td><input type=text name=dob value='".$row['DOB'] . "'</td>";
     echo "<td><input type=text name=comments value='".$row['Comments'] . "'</td>";
-    echo "<td><input type=text name=membershipstatus value='".$row['MembershipStatus'] . "'</td>";	
+    echo "<td><input type=text name=status value='".$row['status'] . "'</td>";	
     echo "<td><input type=text name=address value='".$row['Address'] . "'</td>";
 	echo "<td><input type=text name=suburb value='".$row['Suburb'] . "'</td>";
     echo "<td><input type=text name=city value='".$row['City'] . "'</td>";
@@ -388,7 +388,7 @@ while($row = mysqli_fetch_array($search_result)) {
     echo "<td>".$row['PhoneNum'] . "</td>";
     echo "<td>".$row['DOB'] . "</td>";
     echo "<td>".$row['Comments'] . "</td>";
-    echo "<td>".$row['MembershipStatus'] . "</td>";	
+    echo "<td>".$row['status'] . "</td>";	
     echo "<td>".$row['Address'] . "</td>";
 	echo "<td>".$row['Suburb'] . "</td>";
     echo "<td>".$row['City'] ."</td>";
@@ -409,35 +409,108 @@ echo "</table>";
 		
 	if($_SESSION['membertype'] == "admin"){
 	
-echo '<div class ="tablecontent" style="display: none" id="individual"><b>Please fill in the member information and click Create button</b><br>';
-
-echo '<form method="post" action="individual.php">';
-echo "<table width='100%'>";
-echo '<tr>';
-echo '<th><input type="text" placeholder="Enter Username" name="username" required></th>';
-echo '<th><input type="text" placeholder="Enter Password" name="password" required></th>';
-echo '<th><input type="text" placeholder="Enter Email" name="email" required></th>';
-echo '<th><input type="text" placeholder="Enter Title Eg. Mr/Mrs" name="title" required></th>';
-echo '<th><input type="text" placeholder="Enter First Name" name="firstname" required></th>';
-echo '<th><input type="text" placeholder="Enter Last Name" name="lastname" required></th>';
-echo '<th><input type="text" placeholder="Enter Phone Number" name="phonenumber" required></th>';
-echo '<th><input type="date" placeholder="Enter Date of Birth" name="dob" required></th>';
-echo '<th><input type="text" placeholder="Enter Comments" name="comments" required></th>';
-echo '<th><input type="text" placeholder="Enter Membership Status" name="membershipstatus" required></th>';
-echo '<th><input type="text" placeholder="Enter Address" name="address" required></th>';
-echo '<th><input type="text" placeholder="Enter City" name="city" required></th>';
-echo '<th><input type="text" placeholder="Enter Suburb" name="suburb" required></th>';
-echo '<th><input type="text" placeholder="Enter Country" name="country" required></th>';
-echo '<th>Make Individual<input type="radio"  name="membertype" value="individual" required></th>';
-echo '<th>Make Admin<input type="radio"  name="membertype" value="admin" required></th>';
-echo '<th>Make Volunteer<input type="radio"  name="membertype" value="volunteer" required></th>';
-echo '<td><b><input type="submit" class="radio" value ="Create" name="submitButtonIndividual"></b></th>';
-echo '</tr>';
-echo '</table>';
-echo '</form>';
-echo '<br><button id="viewT"><b>View Tables</b></button><br><br>';
-
-echo '</div>';
+	
+echo '<div class ="contents" style="display: none" id="individual"><b>Please fill in the member information and click Create button</b><br>';
+echo ' <form method="post" action="individual.php">
+<div class="form-group row">
+    <label for="username" class="col-4 col-form-label">Username</label> 
+    <div class="col-8">
+      <input id="username" name="username" placeholder="Username" type="text" class="form-control">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="password" class="col-4 col-form-label">Password</label> 
+    <div class="col-8">
+      <input id="password" name="password" placeholder="Enter Password" type="text" class="form-control">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="email" class="col-4 col-form-label">Email</label> 
+    <div class="col-8">
+      <input id="email" name="email" placeholder="Enter Email" type="text" class="form-control">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="title" class="col-4 col-form-label">Title</label> 
+    <div class="col-8">
+      <input id="title" name="title" placeholder="Enter Title E.g. Mr/Mrs" type="text" class="form-control">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="firstname" class="col-4 col-form-label">First Name</label> 
+    <div class="col-8">
+      <input id="firstname" name="firstname" placeholder="Enter Firstname" type="text" class="form-control">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="lastname" class="col-4 col-form-label">Last Name</label> 
+    <div class="col-8">
+      <input id="lastname" name="lastname" placeholder="Enter Lastname" type="text" class="form-control">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="phonenumber" class="col-4 col-form-label">Phone Number</label> 
+    <div class="col-8">
+      <input id="phonenumber" name="phonenumber" placeholder="Enter Phone Number" type="text" class="form-control">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="dob" class="col-4 col-form-label">Date of Birth</label> 
+    <div class="col-8">
+      <input id="dob" name="dob" type="date" class="form-control">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="comments" class="col-4 col-form-label">Comments</label> 
+    <div class="col-8">
+      <input id="comments" name="comments" placeholder="Enter Comments" type="text" class="form-control">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="status" class="col-4 col-form-label">Membership Status</label> 
+    <div class="col-8">
+      <input id="status" name="status" placeholder="Enter Membership Status" type="text" class="form-control">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="address" class="col-4 col-form-label">Address</label> 
+    <div class="col-8">
+      <input id="address" name="address" placeholder="Enter Address" type="text" class="form-control">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="suburb" class="col-4 col-form-label">Suburb</label> 
+    <div class="col-8">
+      <input id="suburb" name="suburb" placeholder="Enter Suburb" type="text" class="form-control">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="city" class="col-4 col-form-label">City</label> 
+    <div class="col-8">
+      <input id="city" name="city" placeholder="Enter City" type="text" class="form-control">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="country" class="col-4 col-form-label">Country</label> 
+    <div class="col-8">
+      <input id="country" name="country" placeholder="Enter Country" type="text" class="form-control">
+    </div>
+  </div> 
+  <div class="form-group row">
+    <label for="radio" class="col-4 col-form-label">Membership Type</label> 
+    <div class="col-8">
+      Make Volunteer<input type="radio"  name="membertype" value="volunteer" required>
+	  Make Individual<input type="radio"  name="membertype" value="individual" required>
+	  Make Admin<input type="radio"  name="membertype" value="admin" required>
+    </div>
+  </div> 
+    <div class="form-group row">
+    <div class="col-8">
+<b><input type="submit" value ="Create" name="submitButtonIndividual"></b><br>
+<br><button id="viewT"><b>View Tables</b></button><br><br>
+    </div>
+  </div> </form></div>
+  ';
 	}
 ?>
       <!-- /.container-fluid -->

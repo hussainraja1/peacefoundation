@@ -123,6 +123,8 @@ $sql_information = "INSERT INTO organisation (OrgID, id, OrgName,PhoneNum, Respo
 $sql_address = "INSERT INTO address (AddressID, id, Address,City,Suburb,Country) VALUES (Null, '$user_id','$street', '$city','$zip','$country')";
 
 	if(mysqli_query($con, $sql_information) && mysqli_query($con, $sql_address) ){
+		header("refresh:1"); 
+
 echo '<script>alert("Record added successfully");</script>';	
 	}
 	else{
@@ -393,28 +395,90 @@ echo "</table>";
 		
 	if($_SESSION['membertype'] == "admin"){
 
-echo '<div class ="tablecontent" style="display: none" id="organisation"><b>Please fill in the member information and click Create button</b><br>
-<form method="post" action="organisation.php">
-<table width="100%">
-<tr>
-<th><input type="text" placeholder="Enter Username" name="username" required></th>
-<th><input type="text" placeholder="Enter Password" name="password" required></th>
-<th><input type="text" placeholder="Enter Email" name="email" required></th>
-<th><input type="text" placeholder="Organisation Name" name="orgname" required></th>
-<th><input type="text" placeholder="Enter Phone Number" name="phonenumber" required></th>
-<th><input type="text" placeholder="Enter Response" name="response" required></th>
-<th><input type="text" placeholder="Enter Annotations" name="annotations" required></th>
-<th><input type="text" placeholder="Organisation Membership" name="orgmembership" required></th>
-<th><input type="text" placeholder="Enter Address" name="street" required></th>
-<th><input type="text" placeholder="Enter City" name="city" required></th>
-<th><input type="text" placeholder="Enter Suburb" name="zip" required></th>
-<th><input type="text" placeholder="Enter Country" name="country" required></th>
-<td><input type="submit" value ="Create" name="submitButtonOrg">
-</tr>
-</table>
-</form>
+echo '<div class ="contents" style="display: none" id="organisation"><b>Please fill in the member information and click Create button</b><br>';
+echo ' <form method="post" action="organisation.php">
+<div class="form-group row">
+    <label for="username" class="col-4 col-form-label">Username</label> 
+    <div class="col-8">
+      <input id="username" name="username" placeholder="Username" type="text" class="form-control">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="password" class="col-4 col-form-label">Password</label> 
+    <div class="col-8">
+      <input id="password" name="password" placeholder="Enter Password" type="text" class="form-control">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="email" class="col-4 col-form-label">Email</label> 
+    <div class="col-8">
+      <input id="email" name="email" placeholder="Enter Email" type="text" class="form-control">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="orgname" class="col-4 col-form-label">Organisation Name</label> 
+    <div class="col-8">
+      <input id="orgname" name="orgname" placeholder="Enter Organisation Name" type="text" class="form-control">
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <label for="phonenumber" class="col-4 col-form-label">Phone Number</label> 
+    <div class="col-8">
+      <input id="phonenumber" name="phonenumber" placeholder="Enter Phone Number" type="text" class="form-control">
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <label for="response" class="col-4 col-form-label">Response</label> 
+    <div class="col-8">
+      <input id="response" name="response" placeholder="Enter Response" type="text" class="form-control">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="annotations" class="col-4 col-form-label">Annotations</label> 
+    <div class="col-8">
+      <input id="annotations" name="annotations" placeholder="Enter Annotations" type="text" class="form-control">
+    </div>
+  </div>
+    <div class="form-group row">
+    <label for="orgmembership" class="col-4 col-form-label">Organisation Membership</label> 
+    <div class="col-8">
+      <input id="orgmembership" name="orgmembership" placeholder="Enter Organisation Membership" type="text" class="form-control">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="street" class="col-4 col-form-label">Address</label> 
+    <div class="col-8">
+      <input id="street" name="street" placeholder="Enter Address" type="text" class="form-control">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="zip" class="col-4 col-form-label">Suburb</label> 
+    <div class="col-8">
+      <input id="zip" name="zip" placeholder="Enter Suburb" type="text" class="form-control">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="city" class="col-4 col-form-label">City</label> 
+    <div class="col-8">
+      <input id="city" name="city" placeholder="Enter City" type="text" class="form-control">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="country" class="col-4 col-form-label">Country</label> 
+    <div class="col-8">
+      <input id="country" name="country" placeholder="Enter Country" type="text" class="form-control">
+    </div>
+  </div> 
+
+    <div class="form-group row">
+    <div class="col-8">
+<b><input type="submit" value ="Create" name="submitButtonOrg"></b><br>
 <br><button id="viewT"><b>View Tables</b></button><br><br>
-</div>';
+    </div>
+  </div> </form></div>
+  ';
 
 	}
 ?>
