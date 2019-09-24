@@ -164,7 +164,8 @@ if ( mysqli_connect_errno() ) {
 <!DOCTYPE html>
 <html>
     <head>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
 <script>
 $(document).ready(function(){
@@ -306,10 +307,10 @@ overflow-y:scroll;
         <form action="individual.php" method="post">
 			
 			<p><b>Please select the the column you want to search in, type in the keyword and click filter button to search:</b></p>
-			<select name="searchIN">
+			<select id='selectColumn' name="searchIN">
   <option  value="nonmember.NonMemberID">Member ID</option>
   <option  value="nonmember.Title">Title</option>
-  <option   value="nonmember.FirstName">First Name </option>
+  <option  value="nonmember.FirstName">First Name </option>
   <option  value="nonmember.LastName">Last Name</option>
   <option  value="nonmember.PhoneNum">Phone Number</option>
   <option  value="nonmember.DOB"> Date of Birth </option>
@@ -321,11 +322,14 @@ overflow-y:scroll;
   <option  value="address.Country"> Country</option>
 
 </select>
-		   <input type="text" name="valueToSearch" placeholder="Keyword To Search"><br><br>
+            <input type="text" name="valueToSearch" placeholder="Keyword To Search"><br><br>
+            <!-- <div class="container">
+            <br><input type="text" name="valueToSearch" id="valueToSearch" class="form-control" placeholder="Enter search value..." /><br>
+            <div id="searchTable"></div>
+            </div> -->
 
             <input type="submit" name="search" value="Filter">
             <input type="submit" name="all" value="Show All Rows"><br><br>
-
 			
 
 <div class ="tablecontent" id= "tableview">
@@ -488,3 +492,27 @@ echo '</div>';
   <script src="js/demo/datatables-demo.js"></script>
     </body>
 </html>
+<script>
+    $(document).ready(function(){
+        $('#valueToSearch').keyup(function(){
+            var query = $(this).val();
+            if(query != '')
+            {
+                $.ajax({
+                    url:"search.php",
+                    method:"POST",
+                    data:{query:query},
+                    success:function(data)
+                    {
+                        $('#searchTable').fadeIn();
+                        $('#searchTable').html(data);
+                    }
+                });
+            }
+        });
+        $(document).on('click', 'li', function(){
+            $('#valueToSearch').val($(this).text());
+            $('#searchTable').fadeOut();
+        });
+    });
+</script>

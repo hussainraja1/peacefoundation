@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c111d519-ed43-4242-bfd0-295417c96c14" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/peacefoundation.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/peacefoundation.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/admin/individual.php" beforeDir="false" afterPath="$PROJECT_DIR$/admin/individual.php" afterDir="false" />
     </list>
@@ -40,7 +41,7 @@
     <property name="DatabaseDriversLRU" value="mysql" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../peacefoundationOLD" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../email" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -111,6 +112,8 @@
       <workItem from="1568256445189" duration="3998000" />
       <workItem from="1568529193231" duration="1195000" />
       <workItem from="1568715227911" duration="3741000" />
+      <workItem from="1569213895749" duration="8208000" />
+      <workItem from="1569284389152" duration="3585000" />
     </task>
     <servers />
   </component>
