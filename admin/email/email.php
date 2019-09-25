@@ -18,7 +18,7 @@ $smtp = Mail::factory('smtp', array(
 'port' => '465',
 'auth' => true,
 'username' => 'hussainraja2099@gmail.com',
-'password' => 'xxx'
+'password' => 'rudb8Ck!a'
 ));
 
 $mail = $smtp->send($to, $headers, $body);
