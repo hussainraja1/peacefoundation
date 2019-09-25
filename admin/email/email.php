@@ -29,5 +29,3 @@ echo('<p>' . $mail->getMessage() . '</p>');
 echo('<p>Message successfully sent!</p>');
 }
 ?>
-
-
