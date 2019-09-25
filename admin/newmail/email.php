@@ -26,8 +26,8 @@ $body = $mime->get();
 
 $headers = $mime->headers($headers);
 
-$host = "smtp.gmail.com";
-$port = "587";
+$host = "ssl://smtp.gmail.com";
+$port = "465";
 $username = "123phptest@gmail.com";
 $password = "pass123.22";
  
