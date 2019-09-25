@@ -20,17 +20,19 @@ $crlf = "n";
 $mime = new Mail_mime($crlf);
 $mime->setTXTBody($text);
 $mime->setHTMLBody($html);
-$mime->addAttachment($file, 'application/pdf', 'INV-0001.pdf', false, 'base64');
+//$mime->addAttachment($file, 'application/pdf', 'INV-0001.pdf', false, 'base64');
  
 $body = $mime->get();
+
 $headers = $mime->headers($headers);
- 
+
 $host = "smtp.gmail.com";
+$port = "587";
 $username = "123phptest@gmail.com";
 $password = "pass123.22";
  
 $smtp = Mail::factory('smtp', array ('host' => $host, 'auth' => true,
- 'username' => $username,'password' => $password));
+ 'username' => $username,'password' => $password, 'port' => $port));
  
 $mail = $smtp->send($to, $headers, $body);
  
