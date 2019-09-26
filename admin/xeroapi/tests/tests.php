@@ -218,8 +218,8 @@ if ( isset($_REQUEST['wipe'])) {
  echo "</table><br><input type='submit' value='Download'></form></div>";
 
                 if ($_REQUEST['invoice']=="pdf") {
-                    $response = $XeroOAuth->request('GET', $XeroOAuth->url('Invoice/'.$invoices->Invoices[0]->Invoice->InvoiceID, 'core'), array(), "", 'pdf');
-				
+				    $response = $XeroOAuth->request('GET', $XeroOAuth->url('Invoice/'.$invoices->Invoices[0]->Invoice->InvoiceID, 'core'), array(), "", 'pdf');
+
 					if ($XeroOAuth->response['code'] == 200) {
 					$invoiceNumber =  count($invoices->Invoices[0]);
 			$counting = 0;
@@ -229,6 +229,8 @@ if ( isset($_REQUEST['wipe'])) {
 				foreach($_POST['checkbox'] as $objectNo) {
 			          
 					  $newON = (int)$objectNo;
+                      $response = $XeroOAuth->request('GET', $XeroOAuth->url('Invoice/'.$invoices->Invoices[0]->Invoice[$newON]->InvoiceID, 'core'), array(), "", 'pdf');
+
 					   //File PDF download location EDIT ACCORDING TO THE USER
 					   $fileLocation = "../../../../../Users/Hussain/Desktop/Invoices/";
                        $myFile = $fileLocation.$invoices->Invoices[0]->Invoice[$newON]->InvoiceNumber.".pdf";
