@@ -31,8 +31,8 @@ $port = "465";
 $username = "123phptest@gmail.com";
 $password = "pass123.22";
  
-$smtp = Mail::factory('smtp', array ('host' => $host, 'auth' => true,
- 'username' => $username,'password' => $password, 'port' => $port));
+$smtp = Mail::factory('smtp', array ('host' => $host, 'port' => $port, 'auth' => true,
+ 'username' => $username,'password' => $password));
  
 $mail = $smtp->send($to, $headers, $body);
  
