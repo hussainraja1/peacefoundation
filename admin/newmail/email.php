@@ -4,7 +4,7 @@ require_once "Mail.php"; // PEAR Mail package
 require_once ('Mail/mime.php'); // PEAR Mail_Mime packge
  
 $from = "123phptest@gmail.com";
-$to = "123phptest@gmail.com";
+$to = "hussainraja2099@gmail.com";
 $subject = 'Call Me!';
  
 $headers = array ('From' => $from,'To' => $to, 'Subject' => $subject);
@@ -14,18 +14,18 @@ $text = 'Hi son, what are you doing?nnHeres an picture of a cat for you.';
 $html = 'Hi son, what are you doing?<br /><br />Heres an picture of a cat for you.';
  
 // attachment
-$file = '/C:/User/Volkan/Desktop/Invoices/INV-0001.pdf';
-//$crlf = "n";
+$file = 'C:\Users\Hussain\Desktop\Invoices\INV-0005.pdf';
+$crlf = "\n";
  
-$mime = new Mail_mime;
+$mime = new Mail_mime();
+
 $mime->setTXTBody($text);
 $mime->setHTMLBody($html);
 
-
-$mime->addAttachment($file, 'application/pdf', 'INV-0001.pdf', false);
+$mime->addAttachment($file, 'application/pdf', false, 'base64');
  
-$headers = $mime->headers($headers);
 $body = $mime->get();
+$headers = $mime->headers($headers);
 
 $host = "ssl://smtp.gmail.com";
 $port = "465";
