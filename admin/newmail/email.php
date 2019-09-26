@@ -27,8 +27,8 @@ $mime->addAttachment($file, 'application/pdf', 'INV-0001.pdf', false);
 $headers = $mime->headers($headers);
 $body = $mime->get();
 
-$host = "smtp.gmail.com";
-$port = "587";
+$host = "ssl://smtp.gmail.com";
+$port = "465";
 $username = "123phptest@gmail.com";
 $password = "pass123.22";
  
