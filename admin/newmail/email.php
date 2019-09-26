@@ -14,17 +14,18 @@ $text = 'Hi son, what are you doing?nnHeres an picture of a cat for you.';
 $html = 'Hi son, what are you doing?<br /><br />Heres an picture of a cat for you.';
  
 // attachment
-$file = 'INV-0001.pdf';
-$crlf = "n";
+$file = '/C:/User/Volkan/Desktop/Invoices/INV-0001.pdf';
+//$crlf = "n";
  
-$mime = new Mail_mime($crlf);
+$mime = new Mail_mime;
 $mime->setTXTBody($text);
 $mime->setHTMLBody($html);
-//$mime->addAttachment($file, 'application/pdf', 'INV-0001.pdf', false, 'base64');
- 
-$body = $mime->get();
 
+
+$mime->addAttachment($file, 'application/pdf', 'INV-0001.pdf', false);
+ 
 $headers = $mime->headers($headers);
+$body = $mime->get();
 
 $host = "smtp.gmail.com";
 $port = "587";
