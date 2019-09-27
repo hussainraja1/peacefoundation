@@ -269,7 +269,7 @@ overflow-y:scroll;
 
  <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
 
-    <a class="navbar-brand mr-1" href="index.php">Start Bootstrap</a>
+    <a class="navbar-brand mr-1" href="index.php"><img src="logo_1.png"  title="Peace Logo" alt="Logo"></a>
 
     <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
       <i class="fas fa-bars"></i>

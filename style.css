@@ -6,7 +6,11 @@
   	-moz-osx-font-smoothing: grayscale;
 }
 body {
-  	background-color: #00ff92;
+  	background-color: white;
+background-image: url(peace.jpg);
+
+//background-size: 80%;
+
 }
 .login {
   	width: 400px;
@@ -100,6 +104,7 @@ body.loggedin {
 .content {
 	width: 1000px;
 	margin: 0 auto;
+background-color: lightgrey;
 }
 .content h2 {
 	margin: 0;

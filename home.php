@@ -25,7 +25,7 @@ if (!isset($_SESSION['loggedin'])) {
 		</nav>
 		<div class="content">
 			<h2>Home Page</h2>
-			<p>Welcome back, <?=$_SESSION['name']?>!</p>
+			<b><p>Welcome back, <?=$_SESSION['name']?>!</p></b>
 		</div>
 	</body>
 </html>

@@ -40,18 +40,18 @@ $stmt->close();
 		<div class="content">
 <?php
 if($_SESSION['membertype'] == "admin" || $_SESSION['membertype'] == "volunteer"){
-	echo "Username: ";
+	echo "<b>Username: ";
 	echo $_SESSION['name'];"<br>";
 	echo "<br>Email: ";
 	echo $email;
-	echo"<br><a href='admin/index.php'>Admin Panel</a><br>";
+	echo"<br><a href='admin/index.php'>Admin Panel</a></b><br>";
 	
 }
 else{
-	echo "Username:<br>";
+	echo "<b>Username:<br>";
 	echo $_SESSION['name'];"<br>";
 	echo "Email:<br>";
-	echo $email;"<br>";
+	echo $email;"<br></b>";
 }
 
 ?>
