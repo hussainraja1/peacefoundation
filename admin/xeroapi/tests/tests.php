@@ -1,4 +1,19 @@
 <?php
+require_once "Mail.php"; // PEAR Mail package
+require_once ('Mail/mime.php'); // PEAR Mail_Mime packge
+
+		$DATABASE_HOST = 'localhost';
+		$DATABASE_USER = 'root';
+		$DATABASE_PASS = '';
+		$DATABASE_NAME = 'peacefoundation';
+		// Try and connect using the info above.
+		$con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
+		if ( mysqli_connect_errno() ) {
+			// If there is an error with the connection, stop the script and display the error.
+			die ('Failed to connect to MySQL: ' . mysqli_connect_error());
+			exit();
+
+		}
 echo'
 
 <!DOCTYPE html>
@@ -58,7 +73,7 @@ overflow-y:scroll;
 
  <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
 
-    <a class="navbar-brand mr-1" href="../index.php"><img src="logo_1.png"  title="Peace Logo" alt="Logo"></a>
+    <a class="navbar-brand mr-1" href="../index.php"><img src="../logo_1.png"  title="Peace Logo" alt="Logo"></a>
 
     <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
       <i class="fas fa-bars"></i>
@@ -150,14 +165,97 @@ if ( isset($_REQUEST['wipe'])) {
     $XeroOAuth->config['session_handle'] = $oauthSession['oauth_session_handle'];
 
 
-    
+//PRINT CONTACTS
+  if (isset($_REQUEST['contact'])) {
+        $response = $XeroOAuth->request('GET', $XeroOAuth->url('Contacts', 'core'), array());
+
+        if ($XeroOAuth->response['code'] == 200) {
+            $contact = $XeroOAuth->parseResponse($XeroOAuth->response['response'], $XeroOAuth->response['format']);
+            echo "There are " . count($contact->Contacts[0]). " contacts in this Xero organisation, the first one is: </br>";
+			$contactsCount = count($contact->Contacts[0]);
+			 $x=0;
+			 
+			echo'<div class ="tablecontent" id= "tableview">';
+			echo "<table width='100%'>
+			<tr>
+			<th>Contact ID</th>
+			<th>Name</th>
+			<th>Email</th>
+			</tr>";
+			   for ($x; $x < $contactsCount; $x++) {
+			
+			$ContactID = $contact->Contacts[0]->Contact[$x]->ContactID;
+		    $name = $contact->Contacts[0]->Contact[$x]->Name;
+		    $email = $contact->Contacts[0]->Contact[$x]->EmailAddress;
+
+			
+	
+
+			echo"<tr>";
+			echo "<td>".$ContactID."</td>";
+			echo "<td>".$name."</td>";
+			echo "<td>".$email."</td>";
+	    echo "</tr>";
+				}
+		 echo "</table>";
+		  echo "<form id='contactsEmail' action='?invoice' method='POST'><br><input type='submit' value='Invoice Details'></form>";
+		 //CONNECT TO TEH DATABASE, CHECK IF XEROACCOUNTS TABLE EXISTS, CREATE THE TABLE.
+
+		$query = "SELECT contactID FROM xeroaccounts";
+		$result = mysqli_query($con, $query);
+
+		if(empty($result)) {
+                $query = "CREATE TABLE xeroaccounts (
+                          contactID varchar(255) PRIMARY KEY,
+                          name varchar(255) NOT NULL,
+                          email varchar(255) NOT NULL UNIQUE
+                          )";
+                $result = mysqli_query($con, $query);
+		}
+
+			$contactsCount = count($contact->Contacts[0]);
+			 $x=0;
+			 
+			   for ($x; $x < $contactsCount; $x++) {
+			
+			$ContactID = $contact->Contacts[0]->Contact[$x]->ContactID;
+		    $name = $contact->Contacts[0]->Contact[$x]->Name;
+		    $email = $contact->Contacts[0]->Contact[$x]->EmailAddress;
+			
+			$query ="INSERT INTO xeroaccounts (contactID, name, email)
+SELECT * FROM (SELECT '$ContactID', '$name', '$email') AS tmp
+WHERE NOT EXISTS (
+    SELECT name FROM xeroaccounts WHERE contactID = '$ContactID'
+) LIMIT 1;";
+			$result = mysqli_query($con, $query);
+				}
+		
+			
+        } else {
+            outputError($XeroOAuth);
+  }}
 	//PRINT THE TOTAL NUMBER OF INVOICE DETAILS
     if (isset($_REQUEST['invoice'])) {
         if (!isset($_REQUEST['method'])) {
-            $response = $XeroOAuth->request('GET', $XeroOAuth->url('Invoices', 'core'), array('order' => 'Total DESC'));
-            if ($XeroOAuth->response['code'] == 200) {
-                $invoices = $XeroOAuth->parseResponse($XeroOAuth->response['response'], $XeroOAuth->response['format']);
-                echo "There are " . count($invoices->Invoices[0]). " invoices in this Xero organisation, the first one is: </br>";
+            $response = $XeroOAuth->request('GET', $XeroOAuth->url('Invoices', 'core'),array('order' => 'Total DESC'));
+		   
+		   if ($XeroOAuth->response['code'] == 200) {
+                $invoices = $XeroOAuth->parseResponse($XeroOAuth->response['response'], $XeroOAuth->response['format']);			  
+				
+		$query = "SELECT invoiceID FROM xeroinvoices";
+		$result = mysqli_query($con, $query);
+
+		if(empty($result)) {
+                $query = "CREATE TABLE xeroinvoices (
+                          invoiceID varchar(255) PRIMARY KEY,
+                          contactID varchar(255) not null,
+						  emailsent varchar(255) null,
+						  foreign key(contactID) references xeroaccounts(contactID) 
+                          )";
+                $result = mysqli_query($con, $query);
+		}
+			  
+			  echo "There are " . count($invoices->Invoices[0]). " invoices in this Xero organisation, the first one is: </br>";
                $invoiceNumber =  count($invoices->Invoices[0]);
 			   $x=0;
 				$count = 1;
@@ -165,7 +263,9 @@ if ( isset($_REQUEST['wipe'])) {
 			echo "<table width='100%'>
 			<tr>
 			<th>Send Email</th>
+			<th>Email Sent</th>
 			<th>name</th>
+			<th>Contact ID</th>
 			<th>date</th>
 			<th>duedate</th>
 			<th>status</th>
@@ -178,9 +278,11 @@ if ( isset($_REQUEST['wipe'])) {
 			<th>AmountPaid</th>
 			<th>AmountCredited</th>
 			</tr>";
+			
 			   for ($x; $x < $invoiceNumber; $x++) {
 			
 			$name = $invoices->Invoices[0]->Invoice[$x]->Contact->Name;
+			$ContactID = $invoices->Invoices[0]->Invoice[$x]->Contact->ContactID;
 		    $date = $invoices->Invoices[0]->Invoice[$x]->Date;
 		    $duedate = $invoices->Invoices[0]->Invoice[$x]->DueDate;
 		    $status = $invoices->Invoices[0]->Invoice[$x]->Status;
@@ -192,13 +294,28 @@ if ( isset($_REQUEST['wipe'])) {
 			$AmountDue = $invoices->Invoices[0]->Invoice[$x]->AmountDue;
 			$AmountPaid = $invoices->Invoices[0]->Invoice[$x]->AmountPaid;
 			$AmountCredited = $invoices->Invoices[0]->Invoice[$x]->AmountCredited;
+		
+				$query2 = "SELECT invoiceID, emailsent FROM xeroinvoices
+						WHERE  InvoiceID = '$InvoiceID'";
+				$result = mysqli_query($con, $query2);
+												
+				$row = mysqli_fetch_assoc($result);		
 
+		$query ="INSERT INTO xeroinvoices (invoiceID, contactID)
+				SELECT * FROM (SELECT '$InvoiceID', '$ContactID') AS tmp
+				WHERE NOT EXISTS (
+					SELECT invoiceID FROM xeroinvoices WHERE invoiceID = '$InvoiceID'
+				) LIMIT 1;";
+			$result = mysqli_query($con, $query);
+			
 			echo "<form id='sendingemail' action='?invoice=pdf' method='POST'>";
 
 
 			echo"<tr>";
 			echo "<td> <input type='checkbox' value=$x name='checkbox[]'></td>";
+			echo "<td>".$row['emailsent']."</td>";
 			echo "<td>".$name."</td>";
+			echo "<td>".$ContactID."</td>";
 			echo "<td>".$date."</td>";
 			echo "<td>".$duedate."</td>";
 			echo "<td>".$status."</td>";
@@ -211,33 +328,98 @@ if ( isset($_REQUEST['wipe'])) {
 			echo "<td>NZ$".$AmountPaid."</td>";
 			echo "<td>NZ$".$AmountCredited."</td>";
 	    echo "</tr>";
+		
+		
+		
 			$count++;
 				}
-						
 
- echo "</table><br><input type='submit' value='Download'></form></div>";
+ echo "</table></div><br><input type='submit' value='Download & Send Email'><-Note: Sending email may take couple of seconds. Please do not refresh the page.</form>
+<form id='contactsEmail' action='?contact' method='POST'><br><input type='submit' value='Contact Details'></form> ";
 
                 if ($_REQUEST['invoice']=="pdf") {
 				    $response = $XeroOAuth->request('GET', $XeroOAuth->url('Invoice/'.$invoices->Invoices[0]->Invoice->InvoiceID, 'core'), array(), "", 'pdf');
-
+		
 					if ($XeroOAuth->response['code'] == 200) {
 					$invoiceNumber =  count($invoices->Invoices[0]);
 			$counting = 0;
 			$objectNo=0;
+		 
+
 			if(!empty($_POST['checkbox'])){
 				//Count the check boxes with their values
 				foreach($_POST['checkbox'] as $objectNo) {
 			          
 					  $newON = (int)$objectNo;
                       $response = $XeroOAuth->request('GET', $XeroOAuth->url('Invoice/'.$invoices->Invoices[0]->Invoice[$newON]->InvoiceID, 'core'), array(), "", 'pdf');
+						
+		
+					  
 
 					   //File PDF download location EDIT ACCORDING TO THE USER
 					   $fileLocation = "../../../../../Users/Hussain/Desktop/Invoices/";
-                       $myFile = $fileLocation.$invoices->Invoices[0]->Invoice[$newON]->InvoiceNumber.".pdf";
+					   $inID = $invoices->Invoices[0]->Invoice[$newON]->InvoiceID;
+       				   $myFile = $fileLocation.$invoices->Invoices[0]->Invoice[$newON]->InvoiceID.".pdf";
                        $fh = fopen($myFile, 'w') or die("can't open file");
                        fwrite($fh, $XeroOAuth->response['response']);
 					   fclose($fh);
+					  
+					  $query = "SELECT xeroinvoices.invoiceID, xeroaccounts.email 
+						FROM xeroinvoices ,xeroaccounts
+						WHERE  xeroinvoices.contactID = xeroaccounts.contactID 
+						AND xeroinvoices.invoiceID = '$inID'";
+						$result = mysqli_query($con, $query);
+												
+						$row = mysqli_fetch_assoc($result);											
+						
+						
+						//EMAIL PART------------------------------------------------------------------------
+								$from = "123phptest@gmail.com";
+								$to = $row['email'];
+								$subject = 'Call Me!';
+								echo $to;
+								$headers = array ('From' => $from,'To' => $to, 'Subject' => $subject);
+								 
+								// text and html versions of email.
+								$text = 'Hi son, what are you doing?nnHeres an picture of a cat for you.';
+								$html = 'Hi son, what are you doing?<br /><br />Heres an picture of a cat for you.';
+								 
+								// attachment
+								$pdffile = $row['invoiceID'];
+								$file = 'C:\Users\Hussain\Desktop\Invoices\\'.$pdffile.'.pdf';
+								$crlf = "\n";
+								 echo $file;
+								$mime = new Mail_mime();
 
+								$mime->setTXTBody($text);
+								$mime->setHTMLBody($html);
+
+								$mime->addAttachment($file, 'application/pdf', false, 'base64');
+								 
+								$body = $mime->get();
+								$headers = $mime->headers($headers);
+
+								$host = "ssl://smtp.gmail.com";
+								$port = "465";
+								$username = "123phptest@gmail.com";
+								$password = "pass123.22";
+								 
+								$smtp = Mail::factory('smtp', array ('host' => $host, 'port' => $port, 'auth' => true,
+								 'username' => $username,'password' => $password));
+								 
+								$mail = $smtp->send($to, $headers, $body);
+								 
+								if (PEAR::isError($mail)) {
+									echo("<p>" . $mail->getMessage() . "</p>");
+								}
+								else {
+									echo("<p>Message successfully sent!</p>");
+									$sql = "UPDATE xeroinvoices SET emailsent = 'Yes' WHERE invoiceID = '$pdffile'";
+									$done = mysqli_query($con, $sql);
+
+								}
+						//EMAIL PART END--------------------------------------------------------------------
+						
 						$counting++;
 				}
 				 echo "<br>",$counting, " number of PDF downloaded...</br>";

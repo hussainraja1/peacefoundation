@@ -8,7 +8,7 @@ function testLinks()
 	
         echo '<p><br/><Strong>Accounting API</Strong>
                 <ul>
-                <li><a href="?invoice=1">Invoices GET (with order by Total example)</a></li>
+                <li><a href="?contact">Xero Accounts</a></li>
                 <ul>';
 
         if (XRO_APP_TYPE == 'Partner')   echo '<li><a href="?refresh=1">Refresh access token</a></li>';
