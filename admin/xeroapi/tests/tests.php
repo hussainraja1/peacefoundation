@@ -334,7 +334,13 @@ WHERE NOT EXISTS (
 			$count++;
 				}
 
- echo "</table></div><br><input type='submit' value='Download & Send Email'><-Note: Sending email may take couple of seconds. Please do not refresh the page.</form>
+ echo "</table></div>
+ <b>Subject</b><br>
+ <input type='text' cols='15' name='subject' rows='1' placeholder='Subject' required>
+ <br><b>Email Body Content</b><br>
+ 
+<textarea cols='75' name='text' rows='5' placeholder='Enter Body Paragraph...' required></textarea>
+ <br><input type='submit' value='Download & Send Email'><-Note: Sending email may take couple of seconds. Please do not refresh the page.</form>
 <form id='contactsEmail' action='?contact' method='POST'><br><input type='submit' value='Contact Details'></form> ";
 
                 if ($_REQUEST['invoice']=="pdf") {
@@ -348,6 +354,7 @@ WHERE NOT EXISTS (
 
 			if(!empty($_POST['checkbox'])){
 				//Count the check boxes with their values
+				
 				foreach($_POST['checkbox'] as $objectNo) {
 			          
 					  $newON = (int)$objectNo;
@@ -376,23 +383,20 @@ WHERE NOT EXISTS (
 						//EMAIL PART------------------------------------------------------------------------
 								$from = "123phptest@gmail.com";
 								$to = $row['email'];
-								$subject = 'Call Me!';
-								echo $to;
+								$subject = $_POST['subject'];
 								$headers = array ('From' => $from,'To' => $to, 'Subject' => $subject);
 								 
 								// text and html versions of email.
-								$text = 'Hi son, what are you doing?nnHeres an picture of a cat for you.';
-								$html = 'Hi son, what are you doing?<br /><br />Heres an picture of a cat for you.';
+								$text = $_POST['text'];
 								 
 								// attachment
 								$pdffile = $row['invoiceID'];
 								$file = 'C:\Users\Hussain\Desktop\Invoices\\'.$pdffile.'.pdf';
 								$crlf = "\n";
-								 echo $file;
+
 								$mime = new Mail_mime();
 
 								$mime->setTXTBody($text);
-								$mime->setHTMLBody($html);
 
 								$mime->addAttachment($file, 'application/pdf', false, 'base64');
 								 
@@ -413,7 +417,7 @@ WHERE NOT EXISTS (
 									echo("<p>" . $mail->getMessage() . "</p>");
 								}
 								else {
-									echo("<p>Message successfully sent!</p>");
+									echo "<b>Message successfully sent to:</b> ".$to."<br>";
 									$sql = "UPDATE xeroinvoices SET emailsent = 'Yes' WHERE invoiceID = '$pdffile'";
 									$done = mysqli_query($con, $sql);
 
