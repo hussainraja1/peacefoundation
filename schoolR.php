@@ -3,7 +3,7 @@ include('db.php');
 
 /*
 CHECK THE PAID MEMBER TABLE AND TRY TO FIND A SOLUTION FOR SEPERATION OF PAYING AND NON PAYING MEMBERS.
-THIS PHP FILE STORE USERNAME AND PASSWORD INTO ACCOUNTS TABLE AND IT STORES THE USER INFORMATION INTO NONMEMBER TABLE
+THIS PHP FILE STORE USERNAME AND PASSWORD INTO ACCOUNTS TABLE AND IT STORES THE USER INFORMATION INTO individualmember TABLE
 AND ADDRESS TABLES.
 */
 $username = mysqli_real_escape_string($con, $_REQUEST['username']);
@@ -31,7 +31,7 @@ $sql_address = "INSERT INTO address (AddressID, id, Address,Suburb,City,Country)
 
 echo "Record added successfully into accounts. User Id ", $user_id;
 	if(mysqli_query($con, $sql_information) && mysqli_query($con, $sql_address) ){
-		echo "Record added successfully into nonmember and address. User Id ", $user_id;
+		echo "Record added successfully into individualmember and address. User Id ", $user_id;
 
 	}
 	else{

@@ -19,8 +19,9 @@ else
 // for editing the database
 if($_SESSION['membertype'] == "admin"){
 if(isset($_POST['sub'])){
-$schoolid = $_POST['schoolid'];
+$schoolid = $_POST['accID'];
 $schoolname = $_POST['schoolname'];
+$email = $_POST['email'];
 $trainedby = $_POST['trainedby'];
 $annotations = $_POST['annotations'];
 $schooltype = $_POST['schooltype'];
@@ -46,7 +47,8 @@ if(!empty($schoolname)&&!empty($phonenum)){
 	
 $query =  "
 
-	UPDATE school, address SET school.schoolname='$schoolname',
+	UPDATE school, address,accounts SET school.schoolname='$schoolname',
+	accounts.Email='$email',
 	school.trainedby='$trainedby',
 	school.annotations='$annotations',
 	school.schooltype='$schooltype',
@@ -67,8 +69,8 @@ $query =  "
 	address.suburb='$suburb',
 	address.city='$city',
 	address.country='$country'
-	WHERE school.id=address.id
-	AND school.schoolid = $schoolid;";
+	WHERE school.id=address.id AND accounts.id = school.id
+	AND school.id = $schoolid;";
 	
 	$search_result = filterTable($query);
 
@@ -78,7 +80,7 @@ echo '<script>alert("Please enter the something in the fields");</script>';
 }
 }
 
-//If Remove Button is set, remove the associated contents of the nonmember, account and address tables
+//If Remove Button is set, remove the associated contents of the individualmember, account and address tables
 else if(isset($_POST['remove'])){
 
 $accID = $_POST['accID'];	
@@ -103,21 +105,21 @@ if(isset($_POST['search']) && isset($_POST['searchIN']))
     $valueToSearch = $_POST['valueToSearch'];
     // search in all table columns
     // using concat mysql function
-    $query = "SELECT school.SchoolID,school.id,school.SchoolName,school.TrainedBy,school.Annotations,school.SchoolType,school.PartnershipID,school.DecileRating,
+    $query = "SELECT school.SchoolID,school.id,school.SchoolName,accounts.Email,school.TrainedBy,school.Annotations,school.SchoolType,school.PartnershipID,school.DecileRating,
 	school.MaoriPercentage,school.FullTraining,school.RevisitTraining,school.PrimaryContact,school.Principal,school.PrincipalEmail
 	,school.PhoneNumber,school.Interest,school.EmailSent,school.ReplyDate,school.TrainingBooked,address.Address,address.City,address.Suburb,address.Country
-FROM address ,school
-WHERE  address.id =school.id AND $searchColumn LIKE '%".$valueToSearch."%'";
+FROM address ,school, accounts
+WHERE  address.id =school.id AND accounts.id = school.id AND $searchColumn LIKE '%".$valueToSearch."%'";
 
     $search_result = filterTable($query); 
 }
  else {
 
-    $query = "SELECT school.SchoolID,school.id,school.SchoolName,school.TrainedBy,school.Annotations,school.SchoolType,school.PartnershipID,school.DecileRating,
+    $query = "SELECT school.SchoolID,school.id,school.SchoolName,accounts.Email,school.TrainedBy,school.Annotations,school.SchoolType,school.PartnershipID,school.DecileRating,
 	school.MaoriPercentage,school.FullTraining,school.RevisitTraining,school.PrimaryContact,school.Principal,school.PrincipalEmail,
 	school.PhoneNumber,school.Interest,school.EmailSent,school.ReplyDate,school.TrainingBooked,address.Address,address.City,address.Suburb,address.Country
-FROM address ,school
-WHERE  address.id =school.id";
+FROM address ,school, accounts
+WHERE  address.id =school.id AND accounts.id = school.id";
 
     $search_result = filterTable($query);
 }
@@ -319,7 +321,6 @@ overflow-y:scroll;
         <div class="dropdown-menu" aria-labelledby="pagesDropdown">
           <h6 class="dropdown-header">Display & Edit:</h6>
           <a class="dropdown-item" href="tables.php">Display&Edit Members</a>
-          <a class="dropdown-item" href="resetp.php">User Password Reset</a>
           <div class="dropdown-divider"></div>
           <h6 class="dropdown-header">Admin Settings:</h6>
           <a class="dropdown-item" href="xeroapi/private.php">Display Invoices - Xero</a>
@@ -347,8 +348,9 @@ overflow-y:scroll;
 			
 		<p><b>Please select the the column you want to search in, type in the keyword and click filter button to search:</b></p> 
 			<select name="searchIN">
-  <option  value="school.SchoolID">School ID</option>
-  <option  value="school.SchoolName">School Name</option>
+  <option  value="school.id">Account ID</option>
+  <option  value="school.SchoolName">School Name</option> 
+  <option  value="accounts.Email">Email</option
   <option  value="school.PhoneNumber">Phone Number</option>
   <option  value="school.TrainedBy"> Trained By</option>
   <option  value="school.Annotations">Annotations</option>
@@ -382,9 +384,9 @@ overflow-y:scroll;
      <?php          
 	 echo "<table style='width: 100%'>
 <tr>
-<th>SchoolID</th>
 <th>Account ID</th>
 <th>School Name</th>
+<th>Email</th>
 <th>TrainedBy</th>
 <th>Annotations</th>
 <th>SchoolType</th>
@@ -409,9 +411,9 @@ overflow-y:scroll;
 if($_SESSION['membertype'] == "admin"){
 while($row = mysqli_fetch_array($search_result)) {
     echo "<tr><form action=school.php method=post>";
-    echo "<td><input readonly type=text name=schoolid value='" . $row['SchoolID'] . "'</td>";
 	echo "<td><input readonly type=text name=accID value='" . $row['id'] . "'</td>";
     echo "<td><input type=text name=schoolname value='" . $row['SchoolName'] . "'</td>";
+    echo "<td><input type=text name=email value='" . $row['Email'] . "'</td>";
     echo "<td><input type=text name=trainedby value='" . $row['TrainedBy'] . "'</td>";
     echo "<td><input type='text' name=annotations value='" . $row['Annotations'] . "'</td>";
     echo "<td><input type='text' name=schooltype value='" . $row['SchoolType'] . "'</td>";
@@ -445,9 +447,9 @@ echo "</table>";
 else if($_SESSION['membertype'] == "volunteer"){
 while($row = mysqli_fetch_array($search_result)) {
    
-    echo "<td>" . $row['SchoolID'] . "</td>";
 	echo "<td>".$row['id']. "</td>";
     echo "<td>" . $row['SchoolName'] . "</td>";
+    echo "<td>" . $row['Email'] . "</td>";
     echo "<td>" . $row['TrainedBy'] . "</td>";
     echo "<td>" . $row['Annotations'] . "</td>";
     echo "<td>" . $row['SchoolType'] . "</td>";

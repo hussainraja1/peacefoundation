@@ -123,7 +123,6 @@ overflow-y:scroll;
         <div class="dropdown-menu" aria-labelledby="pagesDropdown">
           <h6 class="dropdown-header">Display & Edit:</h6>
           <a class="dropdown-item" href="../tables.php">Display&Edit Members</a>
-          <a class="dropdown-item" href="../resetp.php">User Password Reset</a>
           <div class="dropdown-divider"></div>
         </div>
       </li>
@@ -334,7 +333,22 @@ WHERE NOT EXISTS (
 			$count++;
 				}
 
- echo "</table></div><br><input type='submit' value='Download & Send Email'><-Note: Sending email may take couple of seconds. Please do not refresh the page.</form>
+ echo "</table></div><br>
+Subject:<br>
+<input type='text' name='subject' placeholder='Enter Subject' required>
+<br>
+Message:<br>
+<textarea rows='4' cols='50' name='body' required>
+Hello, Please see your invoice details in the attached file.
+
+If you have any questions, please let us know.
+
+Thanks,
+The Peace Foundation 
+</textarea>
+ 
+ <br>
+ <input type='submit' value='Download & Send Email'><-Note: Sending email may take couple of seconds. Please do not refresh the page.</form>
 <form id='contactsEmail' action='?contact' method='POST'><br><input type='submit' value='Contact Details'></form> ";
 
                 if ($_REQUEST['invoice']=="pdf") {
@@ -376,13 +390,12 @@ WHERE NOT EXISTS (
 						//EMAIL PART------------------------------------------------------------------------
 								$from = "123phptest@gmail.com";
 								$to = $row['email'];
-								$subject = 'Call Me!';
+								$subject = $_POST['subject'];
 								echo $to;
 								$headers = array ('From' => $from,'To' => $to, 'Subject' => $subject);
 								 
 								// text and html versions of email.
-								$text = 'Hi son, what are you doing?nnHeres an picture of a cat for you.';
-								$html = 'Hi son, what are you doing?<br /><br />Heres an picture of a cat for you.';
+								$text = $_POST['body'];
 								 
 								// attachment
 								$pdffile = $row['invoiceID'];
@@ -392,7 +405,6 @@ WHERE NOT EXISTS (
 								$mime = new Mail_mime();
 
 								$mime->setTXTBody($text);
-								$mime->setHTMLBody($html);
 
 								$mime->addAttachment($file, 'application/pdf', false, 'base64');
 								 

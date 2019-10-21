@@ -92,7 +92,6 @@ else
         <div class="dropdown-menu" aria-labelledby="pagesDropdown">
           <h6 class="dropdown-header">Display & Edit:</h6>
           <a class="dropdown-item" href="tables.php">Display&Edit Members</a>
-          <a class="dropdown-item" href="resetp.php">User Password Reset</a>
           <div class="dropdown-divider"></div>
           <h6 class="dropdown-header">Admin Settings:</h6>
           <a class="dropdown-item" href="xeroapi/private.php">Display Invoices - Xero</a>

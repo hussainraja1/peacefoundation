@@ -7,8 +7,8 @@ define ( "OAUTH_CALLBACK", "oob" );
 $useragent = "My Application";
 
 $signatures = array (
-		'consumer_key' => '0YIFW9EHDDOWKNFEOI1PIZPILHSKAF',
-		'shared_secret' => 'GAPJBLN7HFVRFEOYGXQYFSSABCNG5B',
+		'consumer_key' => 'I3LEADAJXNZ3S4LERXMGCE9LEPQMDJ',
+		'shared_secret' => 'NKTYP2YNS8EJJ8RVFMJBUIQAOGV7WD',
 		// API versions
 		'core_version' => '2.0',
 		'payroll_version' => '1.0',

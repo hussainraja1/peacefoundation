@@ -24,7 +24,7 @@ if ($_POST['action'] == 'edit' && $_POST['id']) {
 		$updateField.= "age='".$_POST['age']."'";
 	}
 	if($updateField && $_POST['id']) {
-		$sqlQuery = "UPDATE nonmember SET $updateField WHERE id='" . $_POST['id'] . "'";	
+		$sqlQuery = "UPDATE individualmember SET $updateField WHERE id='" . $_POST['id'] . "'";	
 		mysqli_query($con, $sqlQuery) or die("database error:". mysqli_error($con));	
 		$data = array(
 			"message"	=> "Record Updated",	
@@ -34,7 +34,7 @@ if ($_POST['action'] == 'edit' && $_POST['id']) {
 	}
 }
 if ($_POST['action'] == 'delete' && $_POST['id']) {
-	$sqlQuery = "DELETE FROM nonmember WHERE id='" . $_POST['id'] . "'";	
+	$sqlQuery = "DELETE FROM individualmember WHERE id='" . $_POST['id'] . "'";	
 	mysqli_query($con, $sqlQuery) or die("database error:". mysqli_error($con));	
 	$data = array(
 		"message"	=> "Record Deleted",	

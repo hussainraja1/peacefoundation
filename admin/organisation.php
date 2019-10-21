@@ -19,8 +19,9 @@ else
 // for editing the database while viewing it
 if($_SESSION['membertype'] == "admin"){
 if(isset($_POST['sub'])){
-$orgid = $_POST['orgid'];	
+$orgid = $_POST['accID'];	
 $orgname = trim($_POST['orgname']);
+$email = trim($_POST['email']);
 $phonenum = trim($_POST['phonenum']);
 $response = trim($_POST['response']);
 $annotations = trim($_POST['annotations']);
@@ -34,7 +35,8 @@ if(!empty($orgname)&&!empty($phonenum)&&!empty($response)&&!empty($annotations)&
 	
 $query =  "
 
-	UPDATE organisation, address SET organisation.orgname='$orgname',
+	UPDATE organisation, address, accounts SET organisation.orgname='$orgname',
+	accounts.Email='$email',
 	organisation.phonenum='$phonenum',
 	organisation.response='$response',
 	organisation.annotations='$annotations',
@@ -43,8 +45,7 @@ $query =  "
 	address.suburb='$suburb',
 	address.city='$city',
 	address.country='$country'
-	WHERE organisation.id=address.id
-	AND organisation.orgid = $orgid;";
+	WHERE organisation.id=address.id AND organisation.id = accounts.id AND organisation.id = $orgid";
 	
 	$search_result = filterTable($query);
 
@@ -54,7 +55,7 @@ echo '<script>alert("Please enter the something in the fields");</script>';
 }
 }
 
-//If Remove Button is set, remove the associated contents of the nonmember, account and address tables
+//If Remove Button is set, remove the associated contents of the individualmember, account and address tables
 else if(isset($_POST['remove'])){
 
 $accID = $_POST['accID'];	
@@ -78,18 +79,18 @@ if(isset($_POST['search']) && isset($_POST['searchIN']))
     $valueToSearch = $_POST['valueToSearch'];
     // search in all table columns
     // using concat mysql function
-    $query = "SELECT organisation.OrgID,organisation.id,organisation.OrgName,organisation.PhoneNum,organisation.Response,organisation.Annotations,organisation.OrgMembership,address.Address,address.Suburb,address.City,address.Country
-	FROM address , organisation
-	WHERE  address.id =organisation.id AND $searchColumn LIKE '%".$valueToSearch."%'";
+    $query = "SELECT organisation.OrgID,organisation.id,organisation.OrgName,accounts.Email,organisation.PhoneNum,organisation.Response,organisation.Annotations,organisation.OrgMembership,address.Address,address.Suburb,address.City,address.Country
+	FROM address , organisation, accounts
+	WHERE  address.id =organisation.id AND accounts.id = organisation.id AND $searchColumn LIKE '%".$valueToSearch."%'";
 
     $search_result = filterTable($query);
     
 }
  else {
 
-    $query = "SELECT organisation.OrgID,organisation.id,organisation.OrgName,organisation.PhoneNum,organisation.Response,organisation.Annotations,organisation.OrgMembership,address.Address,address.Suburb,address.City,address.Country
-	FROM address , organisation
-	WHERE  address.id = organisation.id";
+    $query = "SELECT organisation.OrgID,organisation.id,organisation.OrgName,accounts.Email,organisation.PhoneNum,organisation.Response,organisation.Annotations,organisation.OrgMembership,address.Address,address.Suburb,address.City,address.Country
+	FROM address , organisation, accounts
+	WHERE  address.id = organisation.id AND accounts.id = organisation.id";
 	
     $search_result = filterTable($query);
 }
@@ -156,6 +157,7 @@ if ( mysqli_connect_errno() ) {
 
 }
     $filter_Result = mysqli_query($connect, $query);
+	mysqli_error($connect);
     return $filter_Result;
 }
 ?>
@@ -276,7 +278,6 @@ overflow-y:scroll;
         <div class="dropdown-menu" aria-labelledby="pagesDropdown">
           <h6 class="dropdown-header">Display & Edit:</h6>
           <a class="dropdown-item" href="tables.php">Display&Edit Members</a>
-          <a class="dropdown-item" href="resetp.php">User Password Reset</a>
           <div class="dropdown-divider"></div>
           <h6 class="dropdown-header">Admin Settings:</h6>
           <a class="dropdown-item" href="xeroapi/private.php">Display Invoices - Xero</a>
@@ -306,6 +307,7 @@ overflow-y:scroll;
 						<select name="searchIN">
   <option  value="organisation.OrgID">Organisation ID</option>
   <option  value="organisation.OrgName">Organisation Name</option>
+  <option  value="accounts.Email">Email</option>
   <option   value="organisation.PhoneNum">Phone Number</option>
   <option  value="organisation.Response">Response</option>
   <option  value="organisation.Annotations">Annotations</option>
@@ -325,9 +327,9 @@ overflow-y:scroll;
 <div class ="tablecontent">
      <?php          echo "<table style='width: 100%'>
 <tr>
-<th>OrgID</th>
 <th>Account ID</th>
 <th>OrgName</th>
+<th>Email</th>
 <th>Phone Number</th>
 <th>Response</th>
 <th>Annotations</th>
@@ -342,9 +344,9 @@ if($_SESSION['membertype'] == "admin"){
 while($row = mysqli_fetch_array($search_result)) {
 	
 	echo "<tr><form action=organisation.php method=post>";
-    echo "<td><input readonly type=text name=orgid value='".$row['OrgID'] . "'</td>";
     echo "<td><input readonly type=text name=accID value='".$row['id'] . "'</td>";
     echo "<td><input type=text name=orgname value='".$row['OrgName'] . "'</td>";
+    echo "<td><input type=text name=email value='".$row['Email'] . "'</td>";
     echo "<td><input type=text name=phonenum value='".$row['PhoneNum'] . "'</td>";
     echo "<td><input type=text name=response value='".$row['Response'] . "'</td>";
 	echo "<td><input type=text name=annotations value='".$row['Annotations'] . "'</td>";
@@ -367,9 +369,9 @@ else if($_SESSION['membertype'] == "volunteer"){
 while($row = mysqli_fetch_array($search_result)) {
 	
 	echo "<tr>";
-    echo "<td>".$row['OrgID'] . "</td>";
 	echo "<td>".$row['id']. "</td>";
     echo "<td>".$row['OrgName'] . "</td>";
+    echo "<td>".$row['Email'] . "</td>";
     echo "<td>".$row['PhoneNum'] . "</td>";
     echo "<td>".$row['Response'] . "</td>";
 	echo "<td>".$row['Annotations'] . "</td>";

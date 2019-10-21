@@ -19,10 +19,11 @@ else
 // for editing the database
 if($_SESSION['membertype'] == "admin"){
 if(isset($_POST['sub'])){
-$nid = $_POST['Nid'];	
+$nid = $_POST['accID'];	
 $title = trim($_POST['title']);
 $firstname = trim($_POST['firstname']);
 $lastname = trim($_POST['lastname']);
+$email = trim($_POST['email']);
 $phonenum = trim($_POST['phonenum']);
 $dob = trim($_POST['dob']);
 $comments = trim($_POST['comments']);
@@ -35,20 +36,19 @@ $country = trim($_POST['country']);
 if(!empty($title)&&!empty($firstname)&&!empty($lastname)&&!empty($phonenum)&&!empty($dob)&&!empty($comments)&&!empty($status)&&!empty($address)&&!empty($suburb)&&!empty($city)&&!empty($country)){
 	
 $query =  "
-
-	UPDATE nonmember, address SET nonmember.title='$title',
-	nonmember.firstname='$firstname',
-	nonmember.lastname='$lastname',
-	nonmember.phonenum='$phonenum',
-	nonmember.dob='$dob',
-	nonmember.comments='$comments',
-	nonmember.status ='$status',
+	UPDATE individualmember, accounts, address SET individualmember.title='$title',
+	individualmember.firstname='$firstname',
+	individualmember.lastname='$lastname',
+	accounts.Email='$email',
+	individualmember.phonenum='$phonenum',
+	individualmember.dob='$dob',
+	individualmember.comments='$comments',
+	individualmember.status ='$status',
 	address.address='$address',
 	address.suburb='$suburb',
 	address.city='$city',
 	address.country='$country'
-	WHERE nonmember.id=address.id
-	AND nonmember.nonmemberid = $nid;";
+	WHERE individualmember.id=accounts.id AND address.id = individualmember.id AND individualmember.id = $nid";
 	
 	$search_result = filterTable($query);
 
@@ -57,15 +57,15 @@ else{
 echo '<script>alert("Please enter the something in the fields");</script>';	
 }
 }
-//If Remove Button is set, remove the associated contents of the nonmember, account and address tables
+//If Remove Button is set, remove the associated contents of the individualmember, account and address tables
 else if(isset($_POST['remove'])){
 
 $accID = $_POST['accID'];	
 
-	$query ="DELETE nonmember, address, accounts FROM nonmember 
-LEFT join address on nonmember.id = address.id
-LEFT join accounts on nonmember.id = accounts.id
-where nonmember.id = $accID;";
+	$query ="DELETE individualmember, address, accounts FROM individualmember 
+LEFT join address on individualmember.id = address.id
+LEFT join accounts on individualmember.id = accounts.id
+where individualmember.id = $accID;";
 
 
     $search_result = filterTable($query);
@@ -80,17 +80,17 @@ if(isset($_POST['search']) && isset($_POST['searchIN']))
 	
     // search in all table columns
     // using concat mysql function
-    $query = "SELECT nonmember.NonMemberID,nonmember.id,nonmember.Title,nonmember.FirstName,nonmember.LastName,nonmember.PhoneNum,nonmember.DOB,nonmember.Comments,nonmember.status,address.Address,address.City,address.Suburb,address.Country
-FROM address ,nonmember
-WHERE  address.id =nonmember.id AND $searchColumn LIKE '%".$valueToSearch."%'";
+    $query = "SELECT individualmember.individualMemberID,individualmember.id,individualmember.Title,individualmember.FirstName,individualmember.LastName, accounts.Email, individualmember.PhoneNum,individualmember.DOB,individualmember.Comments,individualmember.Status,address.Address,address.City,address.Suburb,address.Country
+FROM address ,individualmember, accounts
+WHERE  address.id =individualmember.id AND accounts.id = individualmember.id AND $searchColumn LIKE '%".$valueToSearch."%'";
 
     $search_result = filterTable($query);
     
 }
  else {
-    $query = "SELECT nonmember.NonMemberID,nonmember.id,nonmember.Title,nonmember.FirstName,nonmember.LastName,nonmember.PhoneNum,nonmember.DOB,nonmember.Comments,nonmember.status,address.Address,address.City,address.Suburb,address.Country
-FROM address ,nonmember
-WHERE  address.id =nonmember.id";
+    $query = "SELECT individualmember.individualMemberID,individualmember.id,individualmember.Title,individualmember.FirstName,individualmember.LastName, accounts.Email,individualmember.PhoneNum,individualmember.DOB,individualmember.Comments,individualmember.Status,address.Address,address.City,address.Suburb,address.Country
+FROM address ,individualmember, accounts
+WHERE  address.id =individualmember.id AND individualmember.id = accounts.id";
     $search_result = filterTable($query);
 }
 
@@ -120,7 +120,7 @@ $country = mysqli_real_escape_string($con, $_REQUEST['country']);
 $sql = "INSERT INTO accounts (id, Username, Password,Email,membertype) VALUES (Null, '$username','$password', '$email','$membertype')";
 if(mysqli_query($con, $sql)){
 $user_id = mysqli_insert_id($con);
-$sql_information = "INSERT INTO nonmember (NonMemberID, id, Title,FirstName,LastName,PhoneNum,DOB,Comments,status) VALUES (Null, '$user_id','$title', '$firstname','$lastname','$phonenum','$dob', '$comments','$status')";
+$sql_information = "INSERT INTO individualmember (individualMemberID, id, Title,FirstName,LastName,PhoneNum,DOB,Comments,Status) VALUES (Null, '$user_id','$title', '$firstname','$lastname','$phonenum','$dob', '$comments','$status')";
 $sql_address = "INSERT INTO address (AddressID, id, Address,City,Suburb,Country) VALUES (Null, '$user_id','$address', '$city','$suburb','$country')";
 
 	if(mysqli_query($con, $sql_information) && mysqli_query($con, $sql_address) ){
@@ -276,7 +276,6 @@ overflow-y:scroll;
         <div class="dropdown-menu" aria-labelledby="pagesDropdown">
           <h6 class="dropdown-header">Display & Edit:</h6>
           <a class="dropdown-item" href="tables.php">Display&Edit Members</a>
-          <a class="dropdown-item" href="resetp.php">User Password Reset</a>
           <div class="dropdown-divider"></div>
           <h6 class="dropdown-header">Admin Settings:</h6>
           <a class="dropdown-item" href="xeroapi/private.php">Display Invoices - Xero</a>
@@ -307,14 +306,14 @@ overflow-y:scroll;
 			
 			<p><b>Please select the the column you want to search in, type in the keyword and click filter button to search:</b></p>
 			<select name="searchIN">
-  <option  value="nonmember.NonMemberID">Member ID</option>
-  <option  value="nonmember.Title">Title</option>
-  <option   value="nonmember.FirstName">First Name </option>
-  <option  value="nonmember.LastName">Last Name</option>
-  <option  value="nonmember.PhoneNum">Phone Number</option>
-  <option  value="nonmember.DOB"> Date of Birth </option>
-  <option  value="nonmember.Comments"> Comments</option>
-  <option  value="nonmember.status"> Status</option>  
+  <option  value="individualmember.Title">Title</option>
+  <option   value="individualmember.FirstName">First Name </option>
+  <option  value="individualmember.LastName">Last Name</option>
+  <option  value="accounts.Email">Email</option>
+  <option  value="individualmember.PhoneNum">Phone Number</option>
+  <option  value="individualmember.DOB"> Date of Birth </option>
+  <option  value="individualmember.Comments"> Comments</option>
+  <option  value="individualmember.Status"> Status</option>  
   <option  value="address.Address"> Address</option>
   <option  value="address.City"> City</option>
   <option  value="address.Suburb"> Suburb</option>
@@ -331,11 +330,11 @@ overflow-y:scroll;
 <div class ="tablecontent" id= "tableview">
      <?php          echo "<table width='100%'>
 <tr>
-<th>NonMemberID</th>
 <th>Account ID</th>
 <th>Title</th>
 <th>First name</th>
 <th>Last name</th>
+<th>Email</th>
 <th>Phone Number</th>
 <th>Date of Birth</th>
 <th>Comments</th>
@@ -349,15 +348,15 @@ if($_SESSION['membertype'] == "admin"){
 while($row = mysqli_fetch_array($search_result)) {
 	
     echo "<tr><form action=individual.php method=post>";
-	echo "<td><input readonly type=text name=Nid value='".$row['NonMemberID']. "'</td>";
 	echo "<td><input readonly type=text name=accID value='".$row['id']. "'</td>";
     echo "<td><input type=text name=title value='".$row['Title'] . "'</td>";
     echo "<td><input type=text name=firstname value='".$row['FirstName'] . "'</td>";
     echo "<td><input type=text name=lastname value='".$row['LastName'] . "'</td>";
+    echo "<td><input type=text name=email value='".$row['Email'] . "'</td>";
     echo "<td><input type=text name=phonenum value='".$row['PhoneNum'] . "'</td>";
     echo "<td><input type=text name=dob value='".$row['DOB'] . "'</td>";
     echo "<td><input type=text name=comments value='".$row['Comments'] . "'</td>";
-    echo "<td><input type=text name=status value='".$row['status'] . "'</td>";	
+    echo "<td><input type=text name=status value='".$row['Status'] . "'</td>";	
     echo "<td><input type=text name=address value='".$row['Address'] . "'</td>";
 	echo "<td><input type=text name=suburb value='".$row['Suburb'] . "'</td>";
     echo "<td><input type=text name=city value='".$row['City'] . "'</td>";
@@ -376,15 +375,15 @@ else if($_SESSION['membertype'] == "volunteer"){
 while($row = mysqli_fetch_array($search_result)) {
 	
 	echo "<tr>";
-	echo "<td>".$row['NonMemberID']. "</td>";
 	echo "<td>".$row['id']. "</td>";
     echo "<td>".$row['Title'] . "</td>";
     echo "<td>".$row['FirstName'] . "</td>";
     echo "<td>".$row['LastName'] . "</td>";
+    echo "<td>".$row['Email'] . "</td>";	
     echo "<td>".$row['PhoneNum'] . "</td>";
     echo "<td>".$row['DOB'] . "</td>";
     echo "<td>".$row['Comments'] . "</td>";
-    echo "<td>".$row['status'] . "</td>";	
+    echo "<td>".$row['Status'] . "</td>";	
     echo "<td>".$row['Address'] . "</td>";
 	echo "<td>".$row['Suburb'] . "</td>";
     echo "<td>".$row['City'] ."</td>";

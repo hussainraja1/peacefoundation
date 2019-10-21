@@ -27,7 +27,7 @@ $sql_address = "INSERT INTO address (AddressID, id, Address,City,Suburb,Country)
 
 echo "Record added successfully into accounts. User Id ", $user_id;
 	if(mysqli_query($con, $sql_information) && mysqli_query($con, $sql_address) ){
-		echo "Record added successfully into nonmember and address. User Id ", $user_id;
+		echo "Record added successfully into individualmember and address. User Id ", $user_id;
 
 	}
 	else{
