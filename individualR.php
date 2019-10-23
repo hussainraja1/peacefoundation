@@ -8,6 +8,10 @@ AND ADDRESS TABLES.
 */
 $username = mysqli_real_escape_string($con, $_REQUEST['username']);
 $password = mysqli_real_escape_string($con, $_REQUEST['psw']);
+
+$hashed = password_hash($password, PASSWORD_BCRYPT);
+
+
 $password_repeat = mysqli_real_escape_string($con, $_REQUEST['psw-repeat']);
 $email = mysqli_real_escape_string($con, $_REQUEST['email']);
 $membertype = "individual";
@@ -25,7 +29,7 @@ $country = mysqli_real_escape_string($con, $_REQUEST['country']);
 
  
 // Attempt insert query execution
-$sql = "INSERT INTO accounts (id, Username, Password,Email,membertype) VALUES (Null, '$username','$password', '$email','$membertype')";
+$sql = "INSERT INTO accounts (id, Username, Password,Email,membertype) VALUES (Null, '$username','$hashed', '$email','$membertype')";
 
 if(mysqli_query($con, $sql)){
 $user_id = mysqli_insert_id($con);

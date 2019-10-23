@@ -100,6 +100,8 @@ if(isset($_POST['submitButtonOrg'])){
 
 $username = mysqli_real_escape_string($con, $_REQUEST['username']);
 $password = mysqli_real_escape_string($con, $_REQUEST['password']);
+$hashed = password_hash($password, PASSWORD_BCRYPT);
+
 $email = mysqli_real_escape_string($con, $_REQUEST['email']);
 $membertype = "organisation";
 
@@ -116,7 +118,7 @@ $country = mysqli_real_escape_string($con, $_REQUEST['country']);
 
  
 // Attempt insert query execution
-$sql = "INSERT INTO accounts (id, Username, Password,Email,membertype) VALUES (Null, '$username','$password', '$email','$membertype')";
+$sql = "INSERT INTO accounts (id, Username, Password,Email,membertype) VALUES (Null, '$username','$hashed', '$email','$membertype')";
 
 if(mysqli_query($con, $sql)){
 $user_id = mysqli_insert_id($con);

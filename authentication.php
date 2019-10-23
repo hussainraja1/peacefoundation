@@ -21,11 +21,14 @@ $stmt->store_result();
 if ($stmt->num_rows > 0) {
 	$stmt->bind_result($id, $password,$membertype);
 	$stmt->fetch();
+	$log_pass=$_POST['password'];
+	
 	// Account exists, now we verify the password.
 	// Note: remember to use password_hash in your registration file to store the hashed passwords.
-	if ($_POST['password'] === $password) {
+	if (password_verify($log_pass, $password)) {
 		// Verification success! User has loggedin!
 		// Create sessions so we know the user is logged in, they basically act like cookies but remember the data on the server.
+		
 		session_regenerate_id();
 		$_SESSION['loggedin'] = TRUE;
 		$_SESSION['name'] = $_POST['username'];

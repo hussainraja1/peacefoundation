@@ -196,7 +196,7 @@ if (isset($_SESSION['loggedin'])) {
          placeholder="Street"
 		 name="street">
 		 
-	    <input type="suburb" 
+   <input type="suburb" 
          class="form-control" 
          placeholder="Suburb"
 		 name="suburb">
